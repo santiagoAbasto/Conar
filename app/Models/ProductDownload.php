@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ProductDownload extends Model
+{
+    protected $fillable = [
+        'product_id',
+        'name',
+        'file',
+        'type',
+        'size',
+        'order',
+        'is_active',
+        'is_principal',
+    ];
+
+    protected $casts = [
+        'is_active'    => 'boolean',
+        'is_principal' => 'boolean',
+    ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function getFileUrlAttribute()
+    {
+        return asset('storage/' . $this->file);
+    }
+}

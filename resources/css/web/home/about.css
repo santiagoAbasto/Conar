@@ -1,0 +1,105 @@
+/* =============================================
+   ABOUT SECTION — 1366×567px
+   Imagen: absoluta, desde borde izq del viewport, crece en pantallas grandes
+   Inner: 100% ancho, padding-left dinámico = ancho de imagen
+   → sin margen azul a la derecha en ningún tamaño de pantalla
+
+   Math (imagen y padding-left del inner):
+     = max(645px, calc(50vw - 38px))
+     • 1366px screen → 645px ✓
+     • 1920px screen → 922px ✓
+     • <1366px screen → 645px ✓
+============================================= */
+
+.about-section {
+    position: relative;
+    width: 100%;
+    height: 567px;
+    background: #136CBA;
+    overflow: hidden;
+}
+
+/* ── Imagen (absoluta, cubre desde borde izq hasta donde empieza el contenido) ── */
+
+.about-section__img-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 567px;
+    width: max(645px, calc(50vw - 38px));
+    overflow: hidden;
+    z-index: 0;
+}
+
+.about-section__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+}
+
+/* ── Inner: ocupa 100% del ancho, padding-left dinámico igual al ancho de imagen ── */
+
+.about-section__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 567px;
+    box-sizing: border-box;
+    padding-left: max(645px, calc(50vw - 38px));
+}
+
+/* ── Contenido ── */
+
+.about-section__content {
+    height: 100%;
+    padding: 110px 93px 47px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.about-section__title {
+    color: var(--Blanco, #FFF);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 120%;
+}
+
+.about-section__text {
+    margin-top: 23px;
+    width: 578px;
+    color: var(--Blanco, #FFF);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.about-section__text + .about-section__text {
+    margin-top: 16px;
+}
+
+.about-section__btn {
+    margin-top: auto;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--Blanco, #FFF);
+    color: var(--Blanco, #FFF);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.about-section__btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
