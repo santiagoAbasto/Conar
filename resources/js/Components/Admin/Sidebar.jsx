@@ -1,5 +1,24 @@
 import { usePage, router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
+import { useEffect, useMemo, useState } from "react";
+
+function submitLogout() {
+    const token = document.head.querySelector('meta[name="csrf-token"]')?.content || '';
+    const form = document.createElement("form");
+    const csrf = document.createElement("input");
+
+    form.method = "POST";
+    form.action = "/admin/logout";
+    form.style.display = "none";
+
+    csrf.type = "hidden";
+    csrf.name = "_token";
+    csrf.value = token;
+
+    form.appendChild(csrf);
+    document.body.appendChild(form);
+    form.submit();
+}
 
 export default function Sidebar() {
     const page = usePage();
@@ -15,7 +34,7 @@ export default function Sidebar() {
             ],
         },
         {
-            title: "Home",
+            title: "Inicio",
             icon: "solar:home-smile-outline",
             children: [
                 { title: "Slider", icon: "solar:gallery-wide-outline",   url: "/admin/hero" },
@@ -61,6 +80,13 @@ export default function Sidebar() {
             ],
         },
         {
+            title: "Presupuesto",
+            icon: "solar:document-add-outline",
+            children: [
+                { title: "Solicitudes", icon: "solar:inbox-line-outline", url: "/admin/comercial/quotations" },
+            ],
+        },
+        {
             title: "Newsletter",
             icon: "solar:mailbox-outline",
             children: [
@@ -72,10 +98,36 @@ export default function Sidebar() {
             icon: "solar:widget-add-outline",
             children: [
                 { title: "Metadatos SEO", icon: "solar:tag-outline",              url: "/admin/seo" },
+                { title: "Whatsapp Flotante", icon: "solar:phone-calling-rounded-outline", url: "/admin/extras/whatsapp" },
                 { title: "Usuarios Admin", icon: "solar:users-group-two-rounded-outline", url: "/admin/users" },
             ],
         },
     ];
+
+    const initialOpenSections = useMemo(() => {
+        const active = sections
+            .filter((section) => section.children.some((item) => currentUrl.startsWith(item.url)))
+            .map((section) => section.title);
+
+        return active.length ? active : ["Panel"];
+    }, [currentUrl]);
+
+    const [openSections, setOpenSections] = useState(initialOpenSections);
+
+    useEffect(() => {
+        setOpenSections((current) => {
+            const merged = [...new Set([...current, ...initialOpenSections])];
+            return merged;
+        });
+    }, [initialOpenSections]);
+
+    const toggleSection = (title) => {
+        setOpenSections((current) =>
+            current.includes(title)
+                ? current.filter((item) => item !== title)
+                : [...current, title]
+        );
+    };
 
     return (
         <aside className="w-[272px] h-screen sticky top-0 flex flex-col bg-white border-r border-gray-200">
@@ -91,16 +143,36 @@ export default function Sidebar() {
             </div>
 
             {/* NAV */}
-            <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
-                {sections.map(section => (
-                    <div key={section.title}>
-                        <div className="flex items-center gap-2.5 px-3 py-2">
-                            <Icon icon={section.icon} width={16} className="text-gray-400" />
-                            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1.5">
+                {sections.map(section => {
+                    const open = openSections.includes(section.title);
+                    const sectionActive = section.children.some((item) => currentUrl.startsWith(item.url));
+
+                    return (
+                    <div key={section.title} className={`rounded-xl transition ${sectionActive ? "bg-[#25A7CA]/5" : ""}`}>
+                        <button
+                            type="button"
+                            onClick={() => toggleSection(section.title)}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition
+                                ${sectionActive ? "text-[#25A7CA]" : "text-gray-700 hover:bg-gray-50"}`}
+                            aria-expanded={open}
+                        >
+                            <span className={`flex items-center justify-center w-7 h-7 rounded-lg transition ${sectionActive ? "bg-[#25A7CA]/10" : "bg-gray-50"}`}>
+                                <Icon icon={section.icon} width={16} className={sectionActive ? "text-[#25A7CA]" : "text-gray-400"} />
+                            </span>
+                            <span className="text-sm font-semibold flex-1 text-left truncate">
                                 {section.title}
                             </span>
-                        </div>
-                        <div className="mt-1 pl-3">
+                            <Icon
+                                icon="solar:alt-arrow-down-outline"
+                                width={15}
+                                className={`text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+                            />
+                        </button>
+
+                        <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                            <div className="overflow-hidden">
+                                <div className="pb-2 pl-4 pr-2 space-y-1">
                             {section.children.map(item => {
                                 const active = currentUrl.startsWith(item.url);
                                 return (
@@ -125,9 +197,12 @@ export default function Sidebar() {
                                     </button>
                                 );
                             })}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                ))}
+                    );
+                })}
             </nav>
 
             {/* FOOTER */}
@@ -144,7 +219,7 @@ export default function Sidebar() {
                     </div>
                 )}
                 <button
-                    onClick={() => router.post("/admin/logout")}
+                    onClick={submitLogout}
                     className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 border border-red-100 text-red-500 hover:bg-red-100 transition"
                 >
                     <Icon icon="solar:logout-2-outline" width={15} />

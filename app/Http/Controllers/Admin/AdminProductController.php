@@ -46,7 +46,8 @@ class AdminProductController extends Controller
                 'order'        => $p->order,
                 'category'     => $p->category ? [
                     'id'=>$p->category->id,
-                    'name'=>$p->category->name
+                    'name'=>$p->category->name,
+                    'color'=>$p->category->color,
                 ] : null,
                 'subcategory'  => $p->subcategory ? [
                     'id'=>$p->subcategory->id,

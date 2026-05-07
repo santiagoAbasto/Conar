@@ -1,42 +1,62 @@
 import { usePage, router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 
+function submitLogout() {
+    const token = document.head.querySelector('meta[name="csrf-token"]')?.content || '';
+    const form = document.createElement("form");
+    const csrf = document.createElement("input");
+
+    form.method = "POST";
+    form.action = "/admin/logout";
+    form.style.display = "none";
+
+    csrf.type = "hidden";
+    csrf.name = "_token";
+    csrf.value = token;
+
+    form.appendChild(csrf);
+    document.body.appendChild(form);
+    form.submit();
+}
+
 export default function Header() {
     const { auth } = usePage().props;
 
     return (
-        <header className="h-16 bg-white border-b border-[#E5E7EB] px-10 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#111827]">
-                Panel Administrativo
-            </h2>
-            <div className="flex items-center gap-6">
+        <header className="h-[72px] bg-white/90 border-b border-slate-200 px-6 lg:px-10 flex items-center justify-between backdrop-blur-xl">
+            <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#25A7CA]">CONAR</p>
+                <h2 className="text-lg font-bold text-slate-950">
+                    Panel Administrativo
+                </h2>
+            </div>
+            <div className="flex items-center gap-4">
                 {/* Search */}
-                <div className="relative">
+                <div className="relative hidden md:block">
                     <Icon
                         icon="solar:magnifer-outline"
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                     />
                     <input
                         type="text"
                         placeholder="Buscar..."
-                        className="pl-9 pr-4 py-2 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30"
+                        className="w-[250px] rounded-2xl border border-slate-200 bg-slate-50/80 py-2.5 pl-9 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#25A7CA]/40 focus:bg-white focus:ring-4 focus:ring-[#25A7CA]/10"
                     />
                 </div>
-                <Icon
-                    icon="solar:bell-outline"
-                    width={20}
-                    className="text-[#6B7280] hover:text-[#2563EB] cursor-pointer transition"
-                />
-                <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-semibold">
+                <button className="grid h-10 w-10 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-[#25A7CA]/30 hover:text-[#25A7CA]">
+                    <Icon icon="solar:bell-outline" width={19} />
+                </button>
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-2.5 py-2 shadow-sm">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#1F5F8B] text-sm font-bold text-white shadow-[0_10px_20px_rgba(31,95,139,0.22)]">
                         {auth?.user?.name?.charAt(0)}
                     </div>
-                    <span className="text-sm text-[#374151]">
-                        {auth?.user?.name}
-                    </span>
+                    <div className="hidden leading-tight lg:block">
+                        <p className="text-sm font-semibold text-slate-800">{auth?.user?.name}</p>
+                        <p className="text-xs text-slate-400">Administrador</p>
+                    </div>
                     <button
-                        onClick={() => router.post(route("admin.logout"))}
-                        className="text-sm text-red-500 hover:text-red-600"
+                        onClick={submitLogout}
+                        className="rounded-xl px-3 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-50 hover:text-red-600"
                     >
                         Cerrar sesión
                     </button>

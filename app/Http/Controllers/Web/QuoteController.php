@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Mail\QuoteRequestNotificationMail;
 use App\Models\QuoteRequest;
 use App\Models\Product;
 use App\Models\ProductSubcategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class QuoteController extends Controller
 {
@@ -127,14 +129,14 @@ class QuoteController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        QuoteRequest::create([
+        $quoteRequest = QuoteRequest::create([
 
             'instrumental' => $request->instrumental,
             'solution'     => $request->solution,
             'quantity'     => $request->quantity,
 
             'attachment'   => json_encode($files),
-            'process_data' => json_encode($request->input('process_data', [])),
+            'process_data' => $request->input('process_data', []),
 
             'name'    => $request->name,
             'email'   => $request->email,
@@ -146,6 +148,12 @@ class QuoteController extends Controller
 
         ]);
 
+        try {
+            Mail::to(config('mail.to.address'), config('mail.to.name'))
+                ->send(new QuoteRequestNotificationMail($quoteRequest, $files));
+        } catch (\Exception $e) {
+            logger()->error('Error enviando notificación de presupuesto: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'Solicitud enviada correctamente.');
     }

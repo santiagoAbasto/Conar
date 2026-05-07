@@ -80,8 +80,8 @@ class ProductController extends Controller
 
         $products = Product::where('subcategory_id',$subcategory->id)
             ->where('is_active',true)
-            ->with('category')
-            ->paginate(9);
+            ->with(['category', 'images'])
+            ->get();
 
         $categories = ProductCategory::where('is_active',true)
             ->orderBy('order')
@@ -118,7 +118,7 @@ class ProductController extends Controller
 
         $related = Product::where('subcategory_id',$product->subcategory_id)
             ->where('id','!=',$product->id)
-            ->with('category')
+            ->with(['category', 'images'])
             ->limit(3)
             ->get();
 

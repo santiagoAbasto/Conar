@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\ProductSpecController;
 use App\Http\Controllers\Admin\ProductDownloadController;
 use App\Http\Controllers\Admin\AdminSeoMetaController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminFloatingWhatsappController;
 
 /*
 |--------------------------------------------------------------------------
@@ -172,6 +173,15 @@ Route::prefix('hr')->name('hr.')->group(function () {
 
 Route::get('/seo',    [AdminSeoMetaController::class, 'index'])->name('seo.index');
 Route::post('/seo',   [AdminSeoMetaController::class, 'upsert'])->name('seo.upsert');
+
+/*
+|--------------------------------------------------------------------------
+| EXTRAS
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/extras/whatsapp', [AdminFloatingWhatsappController::class, 'edit'])->name('extras.whatsapp.edit');
+Route::post('/extras/whatsapp', [AdminFloatingWhatsappController::class, 'update'])->name('extras.whatsapp.update');
 
 /*
 |--------------------------------------------------------------------------

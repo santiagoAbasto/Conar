@@ -39,7 +39,7 @@
 <div class="quote-grid">
 
     {{-- Instrumental --}}
-    <div class="form-group">
+    <div class="form-group quote-field--instrumental">
         <label>Instrumental*</label>
         <div class="select-wrapper">
             <select id="instrumental-select" required>
@@ -63,7 +63,7 @@
     </div>
 
     {{-- Solución --}}
-    <div class="form-group">
+    <div class="form-group quote-field--solution">
         <label>Solución*</label>
         <div class="select-wrapper">
             <select name="solution" id="solution-select" required disabled>
@@ -81,13 +81,13 @@
     <div id="technical-fields" class="quote-technical-fields"></div>
 
     {{-- Cantidad --}}
-    <div class="form-group">
+    <div class="form-group quote-field--quantity">
         <label>Cantidad</label>
         <input type="number" name="quantity" min="1" value="{{ old('quantity') }}">
     </div>
 
     {{-- Archivos --}}
-    <div class="form-group">
+    <div class="form-group quote-field--attachments">
         <label>Adjuntar archivo</label>
         <label class="file-upload-label" for="file-upload-input">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -107,19 +107,19 @@
     <hr class="quote-divider">
 
     {{-- Nombre --}}
-    <div class="form-group">
+    <div class="form-group quote-field--name">
         <label>Nombre y apellido*</label>
         <input type="text" name="name" value="{{ old('name') }}" required>
     </div>
 
     {{-- Email --}}
-    <div class="form-group">
+    <div class="form-group quote-field--email">
         <label>Email*</label>
         <input type="email" name="email" value="{{ old('email') }}" required>
     </div>
 
     {{-- Teléfono --}}
-    <div class="form-group">
+    <div class="form-group quote-field--phone">
         <label>Teléfono*</label>
         <input type="text" name="phone" value="{{ old('phone') }}" required>
     </div>
@@ -127,7 +127,7 @@
     {{-- Empresa + Submit (columna derecha, span 2 filas) --}}
     <div class="quote-right-block">
 
-        <div class="form-group">
+        <div class="form-group quote-field--company">
             <label>Empresa</label>
             <input type="text" name="company" value="{{ old('company') }}">
         </div>
@@ -140,7 +140,7 @@
     </div>
 
     {{-- Mensaje --}}
-    <div class="form-group">
+    <div class="form-group quote-field--message">
         <label>Mensaje*</label>
         <textarea name="message" rows="5" required>{{ old('message') }}</textarea>
     </div>
@@ -175,7 +175,7 @@
     // ─────────────────────────────────────────────
     function filterSolutions() {
 
-        const subcategoryId = parseInt(instrumentalSelect.value);
+        const subcategoryId = instrumentalSelect.value;
         const selectedOption = instrumentalSelect.options[instrumentalSelect.selectedIndex];
         instrumentalNameInput.value = selectedOption ? (selectedOption.dataset.name || '') : '';
 
@@ -188,7 +188,7 @@
             return;
         }
 
-        const filtered = allSolutions.filter(p => p.subcategory_id === subcategoryId);
+        const filtered = allSolutions.filter(p => String(p.subcategory_id) === subcategoryId);
 
         if (!filtered.length) {
             solutionSelect.innerHTML = '<option value="">Sin productos disponibles</option>';

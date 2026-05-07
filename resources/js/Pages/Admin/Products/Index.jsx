@@ -108,7 +108,12 @@ export default function ProductsIndex({ products, categories, filters }) {
                                 {/* Categoría */}
                                 <td className="px-5 py-3 text-gray-600">
                                     <div>
-                                        <span>{p.category?.name || "—"}</span>
+                                        <span className="inline-flex items-center gap-2">
+                                            {p.category?.color && (
+                                                <span className="h-3.5 w-3.5 rounded-full border border-white shadow-sm ring-1 ring-gray-200" style={{ backgroundColor: p.category.color }} />
+                                            )}
+                                            <span>{p.category?.name || "—"}</span>
+                                        </span>
                                         {p.subcategory && (
                                             <p className="text-xs text-gray-400">{p.subcategory.name}</p>
                                         )}

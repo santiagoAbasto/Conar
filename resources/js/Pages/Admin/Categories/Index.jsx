@@ -4,13 +4,14 @@ import { Icon } from "@iconify/react";
 import { useForm } from "@inertiajs/react";
 import { useState } from "react";
 
-function CategoryModal({ category, onClose }) {
+function CategoryModal({ category, colorPalette, suggestedColor, onClose }) {
     const isEdit = !!category;
     const { data, setData, post, processing, errors } = useForm({
         _method: isEdit ? "PUT" : undefined,
         name: category?.name || "",
         description: category?.description || "",
         order: category?.order || "A",
+        color: category?.color || suggestedColor,
         is_active: category?.is_active ?? true,
         image: null,
     });
@@ -41,6 +42,43 @@ function CategoryModal({ category, onClose }) {
                         <textarea value={data.description} onChange={(e) => setData("description", e.target.value)} rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30 resize-none" />
                     </div>
                     <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="block text-sm text-gray-600">Color de categoría</label>
+                            <span className="text-xs text-gray-400">Rota la paleta al crear nuevas categorías</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <input
+                                type="color"
+                                value={data.color}
+                                onChange={(e) => setData("color", e.target.value.toUpperCase())}
+                                className="h-10 w-12 rounded-lg border border-gray-200 bg-white p-1"
+                            />
+                            <input
+                                type="text"
+                                value={data.color}
+                                onChange={(e) => setData("color", e.target.value.toUpperCase())}
+                                maxLength={7}
+                                className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
+                            />
+                            <div className="flex-1 rounded-lg px-3 py-2 text-xs font-semibold text-white" style={{ backgroundColor: data.color }}>
+                                Preview
+                            </div>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {colorPalette.map((color) => (
+                                <button
+                                    key={color}
+                                    type="button"
+                                    title={color}
+                                    onClick={() => setData("color", color)}
+                                    className={`h-7 w-7 rounded-full border-2 ${data.color === color ? "border-slate-900" : "border-white"} shadow-sm ring-1 ring-gray-200`}
+                                    style={{ backgroundColor: color }}
+                                />
+                            ))}
+                        </div>
+                        {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color}</p>}
+                    </div>
+                    <div>
                         <label className="block text-sm text-gray-600 mb-1">Imagen</label>
                         {category?.image_url && !preview && <img src={category.image_url} className="h-16 rounded-lg object-cover mb-2" alt="" />}
                         <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files[0]; if(f) { setData("image", f); setPreview(URL.createObjectURL(f)); } }} className="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-[#25A7CA]/10 file:text-[#25A7CA]" />
@@ -68,7 +106,7 @@ function CategoryModal({ category, onClose }) {
     );
 }
 
-export default function CategoriesIndex({ categories }) {
+export default function CategoriesIndex({ categories, colorPalette = [], suggestedColor = "#28597D" }) {
     const [modal, setModal] = useState(null); // null | 'create' | category object
 
     const destroy = (id) => {
@@ -78,7 +116,7 @@ export default function CategoriesIndex({ categories }) {
 
     return (
         <AdminLayout>
-            {modal !== null && <CategoryModal category={modal === 'create' ? null : modal} onClose={() => setModal(null)} />}
+            {modal !== null && <CategoryModal category={modal === 'create' ? null : modal} colorPalette={colorPalette} suggestedColor={suggestedColor} onClose={() => setModal(null)} />}
 
             <div className="flex items-center justify-between mb-6">
                 <div>
@@ -96,6 +134,7 @@ export default function CategoriesIndex({ categories }) {
                     <thead>
                         <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
                             <th className="text-left px-5 py-3">Categoría</th>
+                            <th className="px-5 py-3">Color</th>
                             <th className="text-left px-5 py-3">Descripción</th>
                             <th className="px-5 py-3">Productos</th>
                             <th className="px-5 py-3">Estado</th>
@@ -103,13 +142,19 @@ export default function CategoriesIndex({ categories }) {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                        {categories.length === 0 && <tr><td colSpan={5} className="text-center py-10 text-gray-400">Sin categorías.</td></tr>}
+                        {categories.length === 0 && <tr><td colSpan={6} className="text-center py-10 text-gray-400">Sin categorías.</td></tr>}
                         {categories.map((c) => (
                             <tr key={c.id} className="hover:bg-gray-50/50">
                                 <td className="px-5 py-3">
                                     <div className="flex items-center gap-3">
                                         {c.image_url ? <img src={c.image_url} className="w-8 h-8 rounded-lg object-cover" alt="" /> : <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><Icon icon="solar:folder-outline" width={14} className="text-gray-400" /></div>}
                                         <span className="font-medium text-gray-800">{c.name}</span>
+                                    </div>
+                                </td>
+                                <td className="px-5 py-3 text-center">
+                                    <div className="inline-flex items-center gap-2 rounded-full bg-gray-50 px-2 py-1">
+                                        <span className="h-4 w-4 rounded-full border border-white shadow-sm ring-1 ring-gray-200" style={{ backgroundColor: c.color }} />
+                                        <span className="font-mono text-xs text-gray-500">{c.color}</span>
                                     </div>
                                 </td>
                                 <td className="px-5 py-3 text-gray-500 truncate max-w-[250px]">{c.description || '—'}</td>

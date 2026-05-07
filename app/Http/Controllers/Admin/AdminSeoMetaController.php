@@ -12,12 +12,15 @@ class AdminSeoMetaController extends Controller
 {
     const PAGES = [
         'home'           => 'Inicio (Home)',
+        'nosotros'       => 'Nosotros',
         'products'       => 'Productos (listado)',
         'categories'     => 'Categorías',
         'subcategories'  => 'Subcategorías',
         'industries'     => 'Industrias / Sectores',
         'novedades'      => 'Novedades',
         'contacto'       => 'Contacto',
+        'presupuesto'    => 'Presupuesto',
+        'buscador'       => 'Buscador',
     ];
 
     public function index()

@@ -63,7 +63,7 @@ padding:0;
 }
 
 .products-sidebar li{
-padding:0 4px 0 16px;
+padding:0 4px 0 12px;
 border-bottom:1px solid #e5e5e5;
 position:relative;
 }
@@ -78,7 +78,7 @@ position:absolute;
 left:0;
 top:0;
 bottom:0;
-width:6px;
+width:5px;
 }
 
 .products-sidebar a{
@@ -246,6 +246,7 @@ padding-bottom:88px;
 display:grid;
 grid-template-columns:auto 1fr;
 gap:30px;
+align-items:stretch;
 margin-bottom:101px;
 }
 
@@ -324,6 +325,7 @@ display:block;
 display:flex;
 flex-direction:column;
 gap:0;
+min-height:495px;
 }
 
 .product-detail__name{
@@ -384,7 +386,8 @@ margin-bottom:0;
 display:flex;
 gap:30px;
 flex-wrap:wrap;
-margin-top:52px;
+margin-top:auto;
+padding-top:52px;
 }
 
 .product-detail__btn{

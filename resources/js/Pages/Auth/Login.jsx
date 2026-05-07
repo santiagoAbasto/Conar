@@ -7,7 +7,10 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Login({ status, canResetPassword }) {
+    const csrfToken = document.head.querySelector('meta[name="csrf-token"]')?.content || '';
+
     const { data, setData, post, processing, errors, reset } = useForm({
+        _token: csrfToken,
         email: '',
         password: '',
         remember: false,
@@ -15,7 +18,10 @@ export default function Login({ status, canResetPassword }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('login'), {
+        post('/admin/login', {
+            onSuccess: () => {
+                window.location.href = '/admin/dashboard';
+            },
             onFinish: () => reset('password'),
         });
     };

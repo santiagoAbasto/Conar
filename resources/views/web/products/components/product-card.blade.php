@@ -1,8 +1,18 @@
 <a href="{{ route('products.show',$product->slug) }}" class="product-card" style="--cat-color: {{ $product->category->color ?? '#28597D' }}">
+    @php
+    $cardImage = $product->imageUrl;
+
+    if (!$cardImage && $product->relationLoaded('images') && $product->images->count()) {
+        $firstImage = $product->images->sortBy('order')->first();
+        $cardImage = $firstImage?->image_url;
+    }
+    @endphp
 
     <div class="product-card-image">
 
-        <img src="{{ asset('storage/'.$product->image) }}" alt="{{ $product->name }}">
+        @if($cardImage)
+        <img src="{{ $cardImage }}" alt="{{ $product->name }}">
+        @endif
 
         <div class="product-card-overlay">
             <span class="product-card-plus">+</span>
@@ -19,10 +29,6 @@
         <h3 class="product-title">
             {{ $product->name }}
         </h3>
-
-        <p class="product-subtitle">
-            {{ $product->short_description }}
-        </p>
 
     </div>
 

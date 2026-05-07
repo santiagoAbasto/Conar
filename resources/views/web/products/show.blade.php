@@ -34,8 +34,8 @@
                     @foreach($product->images->sortBy('order') as $img)
                     @php
                     $isVideo = $img->isVideo();
-                    $thumbSrc = $isVideo ? ($img->video_thumb ?? asset('images/video-placeholder.png')) : asset('storage/' . $img->image);
-                    $dataSrc = $isVideo ? '' : asset('storage/' . $img->image);
+                    $thumbSrc = $isVideo ? ($img->video_thumb ?? asset('images/video-placeholder.png')) : $img->image_url;
+                    $dataSrc = $isVideo ? '' : $img->image_url;
                     $dataVideo = $isVideo ? $img->embed_url : '';
                     $dataType = $isVideo ? 'video' : 'image';
                     @endphp
@@ -55,11 +55,13 @@
                     </div>
                     @endforeach
                     @else
+                    @if($product->image_url)
                     <div class="product-detail__thumb active"
-                        data-src="{{ asset('storage/' . $product->image) }}"
+                        data-src="{{ $product->image_url }}"
                         data-type="image">
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                     </div>
+                    @endif
                     @endif
                 </div>
 
@@ -86,7 +88,7 @@
                     @else
 
                     <img
-                        src="{{ asset('storage/' . $firstMedia->image) }}"
+                        src="{{ $firstMedia->image_url }}"
                         alt="{{ $product->name }}">
 
                     @endif
@@ -114,7 +116,7 @@
 
                     {{-- IMAGE FALLBACK --}}
                     <img
-                        src="{{ asset('storage/'.$product->image) }}"
+                        src="{{ $product->image_url }}"
                         alt="{{ $product->name }}">
 
                     @endif
@@ -125,10 +127,14 @@
 
             {{-- INFO --}}
             <div class="product-detail__info">
+                @php
+                $detailBody = $product->description ?: $product->short_description ?: $product->subtitle;
+                $showSubtitle = $product->subtitle && trim((string) $product->subtitle) !== trim((string) $detailBody);
+                @endphp
 
                 <h1 class="product-detail__name">{{ $product->name }}</h1>
 
-                @if($product->subtitle)
+                @if($showSubtitle)
                 <p class="product-detail__subtitle">{{ $product->subtitle }}</p>
                 @endif
 
@@ -142,9 +148,9 @@
                 </div>
                 @endif
 
-                @if($product->description)
+                @if($detailBody)
                 <div class="product-detail__description">
-                    {!! nl2br(e($product->description)) !!}
+                    {!! nl2br(e($detailBody)) !!}
                 </div>
                 @endif
 

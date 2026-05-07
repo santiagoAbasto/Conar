@@ -95,9 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
+                    const successMsg = data?.message || "¡Te suscribiste correctamente!";
                     input.value     = "";
-                    msg.textContent = "¡Suscripción realizada!";
-                    showWebToast("¡Te suscribiste correctamente!", "success");
+                    msg.textContent = successMsg;
+                    showWebToast(successMsg, "success");
                 } else {
                     const errores  = data?.errors?.email;
                     const errorMsg = errores

@@ -13,12 +13,15 @@ $_route = Route::currentRouteName() ?? '';
 
 $_pageKey = match(true) {
     $_route === 'home'                          => 'home',
+    $_route === 'nosotros'                      => 'nosotros',
     $_route === 'products.index'                => 'products',
     $_route === 'products.category'             => 'categories',
     $_route === 'products.subcategory'          => 'subcategories',
     str_starts_with($_route, 'industries')      => 'industries',
     str_starts_with($_route, 'posts')           => 'novedades',
     str_starts_with($_route, 'contact')         => 'contacto',
+    $_route === 'presupuesto'                   => 'presupuesto',
+    $_route === 'search'                        => 'buscador',
     default                                     => null,
 };
 

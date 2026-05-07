@@ -9,6 +9,10 @@ class ProductSubcategory extends Model
 {
 
     protected $fillable = [
+        'source_provider',
+        'source_id',
+        'source_url',
+        'last_import_run_id',
         'name',
         'slug',
         'category_id',
@@ -36,6 +40,11 @@ class ProductSubcategory extends Model
     public function technicalFields()
     {
         return $this->hasMany(TechnicalField::class, 'subcategory_id')->orderBy('order');
+    }
+
+    public function lastImportRun()
+    {
+        return $this->belongsTo(ImportRun::class, 'last_import_run_id');
     }
 
     /*

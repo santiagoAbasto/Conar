@@ -11,8 +11,8 @@ export default function QuotationsIndex({ quotations }) {
     return (
         <AdminLayout>
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Cotizaciones</h1>
-                <p className="text-sm text-gray-500">{quotations.total} cotizaciones recibidas</p>
+                <h1 className="text-2xl font-bold text-gray-800">Presupuesto</h1>
+                <p className="text-sm text-gray-500">{quotations.total} solicitudes recibidas</p>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -28,7 +28,7 @@ export default function QuotationsIndex({ quotations }) {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                        {quotations.data.length === 0 && <tr><td colSpan={6} className="text-center py-10 text-gray-400">Sin cotizaciones.</td></tr>}
+                        {quotations.data.length === 0 && <tr><td colSpan={6} className="text-center py-10 text-gray-400">Sin solicitudes de presupuesto.</td></tr>}
                         {quotations.data.map((q) => (
                             <tr key={q.id} className={`hover:bg-gray-50/50 ${!q.is_read ? 'bg-blue-50/30' : ''}`}>
                                 <td className="px-5 py-3">

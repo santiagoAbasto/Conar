@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Product extends Model
 {
     protected $fillable = [
+        'source_provider',
+        'source_id',
+        'source_url',
+        'last_import_run_id',
         'category_id',
         'subcategory_id',
         'name',
@@ -79,6 +82,11 @@ class Product extends Model
         return $this->belongsTo(ProductSubcategory::class);
     }
 
+    public function lastImportRun()
+    {
+        return $this->belongsTo(ImportRun::class, 'last_import_run_id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | ACCESSORS
@@ -91,7 +99,26 @@ class Product extends Model
             return null;
         }
 
-        return Storage::url($this->image);
+        return $this->mediaUrl($this->image);
+    }
+
+    public static function mediaUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+
+        if (Str::startsWith($path, 'storage/')) {
+            return asset($path);
+        }
+
+        return asset('storage/' . $path);
     }
 
     /*

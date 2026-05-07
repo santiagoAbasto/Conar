@@ -14,24 +14,33 @@ use App\Models\SeoMeta;
 $_route   = Route::currentRouteName() ?? '';
 $_pageKey = match(true) {
     $_route === 'home'                     => 'home',
+    $_route === 'nosotros'                 => 'nosotros',
     $_route === 'products.index'           => 'products',
     $_route === 'products.category'        => 'categories',
     $_route === 'products.subcategory'     => 'subcategories',
     str_starts_with($_route, 'industries') => 'industries',
     str_starts_with($_route, 'posts')      => 'novedades',
     str_starts_with($_route, 'contact')    => 'contacto',
+    $_route === 'presupuesto'              => 'presupuesto',
+    $_route === 'search'                   => 'buscador',
     default                                => null,
 };
 $_seo        = $_pageKey ? SeoMeta::where('page', $_pageKey)->first() : null;
 $_seoKeywords = $_seo?->keywords    ?: '';
 $_seoOgImage  = $_seo?->og_image_url ?: null;
+$_isDynamicDetailPage = in_array($_route, [
+    'products.category',
+    'products.subcategory',
+    'industries.show',
+    'posts.show',
+], true);
 
-// ── Título final: página específica tiene prioridad sobre el del admin ──
+// ── Título final: admin gobierna páginas estáticas; detalles mantienen título propio ──
 $_pageTitle  = $__env->hasSection('title') ? trim($__env->yieldContent('title')) : null;
 $_adminTitle = $_seo?->title ?: null;
-$_metaTitle  = $_pageTitle
-    ? $_pageTitle . ' – CONAR'
-    : ($_adminTitle ?: 'CONAR – Instrumentación Industrial');
+$_metaTitle  = (!$_isDynamicDetailPage && $_adminTitle)
+    ? $_adminTitle
+    : ($_pageTitle ? $_pageTitle . ' – CONAR' : ($_adminTitle ?: 'CONAR – Instrumentación Industrial'));
 
 // ── Descripción final ───────────────────────────────────────────────────
 $_pageDesc  = $__env->hasSection('meta_description') ? trim($__env->yieldContent('meta_description')) : null;
@@ -42,6 +51,13 @@ $_metaDesc  = $_pageDesc
 <title>{{ $_metaTitle }}</title>
 
 <meta name="description" content="{{ $_metaDesc }}">
+<link rel="icon" href="{{ asset('favicon.ico') }}?v=2" sizes="any">
+<link rel="icon" type="image/svg+xml" href="{{ asset('favicon/favicon.svg') }}">
+<link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon/favicon-96x96.png') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png') }}">
+<link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
+<link rel="canonical" href="{{ url()->current() }}">
+<meta name="robots" content="index, follow">
 
 @if(!empty($_seoKeywords))
 <meta name="keywords" content="{{ $_seoKeywords }}">
@@ -76,6 +92,8 @@ $_metaDesc  = $_pageDesc
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 @vite(['resources/css/web.css','resources/js/web.js'])
+
+<x-tracker />
 
 </head>
 

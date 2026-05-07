@@ -27,9 +27,9 @@ class ContactController extends Controller
 
         $message = ContactMessage::create($validated);
 
-        // Notificación al admin via Mailtrap
+        // Notificación al destinatario configurado para producción.
         try {
-            Mail::to(config('mail.from.address'))
+            Mail::to(config('mail.to.address'), config('mail.to.name'))
                 ->send(new ContactNotificationMail($message));
         } catch (\Exception $e) {
             // No interrumpir el flujo si el mail falla

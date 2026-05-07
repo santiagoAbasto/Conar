@@ -17,6 +17,6 @@ class SeoMeta extends Model
 
     public function getOgImageUrlAttribute(): ?string
     {
-        return $this->og_image ? Storage::url($this->og_image) : null;
+        return $this->og_image ? url(Storage::url($this->og_image)) : null;
     }
 }

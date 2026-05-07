@@ -3,10 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ProductImage extends Model
 {
     protected $fillable = [
+        'source_provider',
+        'source_id',
+        'source_url',
+        'last_import_run_id',
         'product_id',
         'image',
         'video_url',
@@ -18,9 +23,14 @@ class ProductImage extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function lastImportRun()
+    {
+        return $this->belongsTo(ImportRun::class, 'last_import_run_id');
+    }
+
     public function getImageUrlAttribute()
     {
-        return asset('storage/' . $this->image);
+        return $this->mediaUrl($this->image);
     }
 
     public function isVideo(): bool
@@ -49,11 +59,11 @@ class ProductImage extends Model
         }
 
         // Local mp4
-        if (str_starts_with($url, 'http')) {
+        if (Str::startsWith($url, ['http://', 'https://'])) {
             return $url;
         }
 
-        return asset('storage/' . $url);
+        return $this->mediaUrl($url);
     }
 
     /**
@@ -68,5 +78,24 @@ class ProductImage extends Model
         }
 
         return null;
+    }
+
+    private function mediaUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+
+        if (Str::startsWith($path, 'storage/')) {
+            return asset($path);
+        }
+
+        return asset('storage/' . $path);
     }
 }

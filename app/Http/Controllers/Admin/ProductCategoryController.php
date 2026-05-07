@@ -22,10 +22,13 @@ class ProductCategoryController extends Controller
                     'slug'          => $c->slug,
                     'description'   => $c->description,
                     'image_url'     => $c->image_url,
+                    'color'         => $c->color,
                     'is_active'     => $c->is_active,
                     'order'         => $c->order,
                     'products_count'=> $c->products_count,
                 ]),
+            'colorPalette' => ProductCategory::COLOR_PALETTE,
+            'suggestedColor' => ProductCategory::suggestedColor(),
         ]);
     }
 
@@ -40,6 +43,7 @@ class ProductCategoryController extends Controller
             'name'        => 'required|string|max:120',
             'description' => 'nullable|string|max:500',
             'order'       => 'nullable|string|max:10',
+            'color'       => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'is_active'   => 'boolean',
             'image'       => 'nullable|image|max:4096',
         ]);
@@ -51,6 +55,7 @@ class ProductCategoryController extends Controller
         $data['slug']      = Str::slug($data['name']);
         $data['is_active'] = $request->boolean('is_active', true);
         $data['order']     = strtoupper(trim($data['order'] ?? '')) ?: 'A';
+        $data['color']     = strtoupper($data['color'] ?: ProductCategory::suggestedColor());
 
         ProductCategory::create($data);
 
@@ -67,6 +72,7 @@ class ProductCategoryController extends Controller
                 'slug'        => $category->slug,
                 'description' => $category->description,
                 'image_url'   => $category->image_url,
+                'color'       => $category->color,
                 'is_active'   => $category->is_active,
                 'order'       => $category->order,
             ],
@@ -79,6 +85,7 @@ class ProductCategoryController extends Controller
             'name'        => 'required|string|max:120',
             'description' => 'nullable|string|max:500',
             'order'       => 'nullable|string|max:10',
+            'color'       => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'is_active'   => 'boolean',
             'image'       => 'nullable|image|max:4096',
         ]);
@@ -91,6 +98,7 @@ class ProductCategoryController extends Controller
 
         $data['is_active'] = $request->boolean('is_active', true);
         $data['order']     = strtoupper(trim($data['order'] ?? '')) ?: 'A';
+        $data['color']     = strtoupper($data['color'] ?: $category->color);
         $category->update($data);
 
         return redirect('/admin/categories')

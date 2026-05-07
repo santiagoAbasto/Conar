@@ -8,11 +8,16 @@ use Illuminate\Support\Str;
 class ProductCategory extends Model
 {
     protected $fillable = [
+        'source_provider',
+        'source_id',
+        'source_url',
+        'last_import_run_id',
         'name',
         'slug',
         'image',
         'order',
         'description',
+        'color',
         'is_active',
     ];
 
@@ -36,6 +41,11 @@ class ProductCategory extends Model
         return $this->hasMany(ProductSubcategory::class, 'category_id');
     }
 
+    public function lastImportRun()
+    {
+        return $this->belongsTo(ImportRun::class, 'last_import_run_id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | PALETA DE COLORES
@@ -44,7 +54,7 @@ class ProductCategory extends Model
     |--------------------------------------------------------------------------
     */
 
-    const COLOR_PALETTE = [
+    public const COLOR_PALETTE = [
         '#28597D', // 1
         '#FD7F23', // 2
         '#075433', // 3
@@ -53,6 +63,17 @@ class ProductCategory extends Model
         '#188495', // 6
         '#431F7F', // 7
         '#3D586D', // 8
+    ];
+
+    public const NAMED_COLORS = [
+        'caudal' => '#28597D',
+        'nivel' => '#FD7F23',
+        'presion' => '#075433',
+        'temperatura' => '#960D14',
+        'analisis' => '#B6AE27',
+        'controladores de procesos' => '#188495',
+        'indicacion y registro de datos' => '#431F7F',
+        'productos especiales y servicios' => '#3D586D',
     ];
 
     /*
@@ -67,6 +88,12 @@ class ProductCategory extends Model
      */
     public function getColorAttribute(): string
     {
+        $stored = $this->attributes['color'] ?? null;
+
+        if (is_string($stored) && preg_match('/^#[0-9A-Fa-f]{6}$/', $stored)) {
+            return strtoupper($stored);
+        }
+
         $palette = self::COLOR_PALETTE;
 
         $order = strtoupper($this->order ?? 'A');
@@ -78,6 +105,13 @@ class ProductCategory extends Model
         $index = $index % count($palette);
 
         return $palette[$index];
+    }
+
+    public static function suggestedColor(): string
+    {
+        $count = static::query()->count();
+
+        return self::COLOR_PALETTE[$count % count(self::COLOR_PALETTE)];
     }
 
 
@@ -101,6 +135,11 @@ class ProductCategory extends Model
         static::creating(function ($category) {
             if (!$category->slug) {
                 $category->slug = Str::slug($category->name);
+            }
+
+            if (!$category->color) {
+                $name = Str::of($category->name)->ascii()->lower()->squish()->toString();
+                $category->color = self::NAMED_COLORS[$name] ?? self::suggestedColor();
             }
         });
 

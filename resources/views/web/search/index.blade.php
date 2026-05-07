@@ -63,38 +63,7 @@
     @else
         <div class="search-page__grid products-subcategory">
             @foreach($results as $product)
-            <a href="{{ route('products.show', $product->slug) }}" class="product-card" style="--cat-color: {{ $product->category->color ?? '#28597D' }}">
-
-                <div class="product-card-image">
-                    <img
-                        src="{{ $product->imageUrl }}"
-                        alt="{{ $product->name }}"
-                    >
-                    <div class="product-card-overlay">
-                        <span class="product-card-plus">+</span>
-                    </div>
-                </div>
-
-                <div class="product-card-body">
-
-                    @if($product->category)
-                    <span class="product-category">
-                        @php
-                            $catName = $product->category->name;
-                            echo e(strtoupper(is_array($catName) ? ($catName['es'] ?? reset($catName)) : $catName));
-                        @endphp
-                    </span>
-                    @endif
-
-                    <h3 class="product-title">{{ $product->name }}</h3>
-
-                    @if($product->short_description)
-                    <p class="product-subtitle">{{ $product->short_description }}</p>
-                    @endif
-
-                </div>
-
-            </a>
+            @include('web.products.components.product-card')
             @endforeach
         </div>
     @endif

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'ipinfo' => [
+        'token' => env('IPINFO_TOKEN'),
+    ],
+
+    'ipstack' => [
+        'key' => env('IPSTACK_KEY'),
+    ],
+
 ];
