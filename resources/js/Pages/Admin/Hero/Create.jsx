@@ -3,16 +3,17 @@ import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField from "@/Components/Admin/TranslatableField";
 
 export default function HeroCreate() {
     const { data, setData, post, processing, errors } = useForm({
-        title: "",
-        subtitle: "",
-        content: "",
+        title: { es: "", pt: "", en: "" },
+        subtitle: { es: "", pt: "", en: "" },
+        content: { es: "", pt: "", en: "" },
         media_type: "image",
         media: null,
         video_url: "",
-        button_text: "",
+        button_text: { es: "", pt: "", en: "" },
         button_link: "",
         order: "A",
         is_active: true,
@@ -84,37 +85,16 @@ export default function HeroCreate() {
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-semibold text-gray-700">Contenido</h2>
 
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Título</label>
-                            <input type="text" value={data.title} onChange={(e) => setData("title", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" placeholder="Título del slide" />
-                            {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Subtítulo</label>
-                            <input type="text" value={data.subtitle} onChange={(e) => setData("subtitle", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" placeholder="Subtítulo" />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Descripción</label>
-                            <textarea
-                                value={data.content}
-                                onChange={(e) => setData("content", e.target.value)}
-                                rows={3}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30 resize-none"
-                                placeholder="Descripción del slide..."
-                            />
-                        </div>
+                        <TranslatableField label="Título" value={data.title} onChange={(v) => setData("title", v)} placeholder="Título del slide" error={errors.title} />
+                        <TranslatableField label="Subtítulo" value={data.subtitle} onChange={(v) => setData("subtitle", v)} placeholder="Subtítulo" error={errors.subtitle} />
+                        <TranslatableField label="Descripción" value={data.content} onChange={(v) => setData("content", v)} type="textarea" rows={3} placeholder="Descripción del slide..." error={errors.content} />
                     </div>
 
                     {/* CTA */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-semibold text-gray-700">Botón (CTA)</h2>
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm text-gray-600 mb-1">Texto del botón</label>
-                                <input type="text" value={data.button_text} onChange={(e) => setData("button_text", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" placeholder="Ver más" />
-                            </div>
+                            <TranslatableField label="Texto del botón" value={data.button_text} onChange={(v) => setData("button_text", v)} placeholder="Ver más" />
                             <div>
                                 <label className="block text-sm text-gray-600 mb-1">URL del botón</label>
                                 <input type="text" value={data.button_link} onChange={(e) => setData("button_link", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" placeholder="/productos" />

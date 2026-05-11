@@ -9,6 +9,7 @@ use App\Models\ProductSubcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Support\Translation;
 
 class AdminProductController extends Controller
 {
@@ -36,7 +37,7 @@ class AdminProductController extends Controller
         return Inertia::render('Admin/Products/Index',[
             'products' => $query->paginate(20)->through(fn($p) => [
                 'id'           => $p->id,
-                'name'         => $p->name,
+                'name'         => Translation::payload($p->getRawOriginal('name')),
                 'slug'         => $p->slug,
                 'brand'        => $p->brand,
                 'image_url'    => $p->image_url,
@@ -46,17 +47,18 @@ class AdminProductController extends Controller
                 'order'        => $p->order,
                 'category'     => $p->category ? [
                     'id'=>$p->category->id,
-                    'name'=>$p->category->name,
+                    'name'=>Translation::payload($p->category->getRawOriginal('name')),
                     'color'=>$p->category->color,
                 ] : null,
                 'subcategory'  => $p->subcategory ? [
                     'id'=>$p->subcategory->id,
-                    'name'=>$p->subcategory->name
+                    'name'=>Translation::payload($p->subcategory->getRawOriginal('name'))
                 ] : null,
             ]),
 
             'categories' => ProductCategory::orderBy('name')
-                ->get(['id','name']),
+                ->get(['id','name'])
+                ->map(fn($c) => ['id' => $c->id, 'name' => Translation::payload($c->getRawOriginal('name'))]),
 
             'filters' => $request->only(['search','category']),
         ]);
@@ -74,10 +76,12 @@ class AdminProductController extends Controller
     {
         return Inertia::render('Admin/Products/Create',[
             'categories' => ProductCategory::orderBy('name')
-                ->get(['id','name']),
+                ->get(['id','name'])
+                ->map(fn($c) => ['id' => $c->id, 'name' => Translation::payload($c->getRawOriginal('name'))]),
 
             'subcategories' => ProductSubcategory::orderBy('name')
-                ->get(['id','name','category_id']),
+                ->get(['id','name','category_id'])
+                ->map(fn($s) => ['id' => $s->id, 'name' => Translation::payload($s->getRawOriginal('name')), 'category_id' => $s->category_id]),
         ]);
     }
 
@@ -96,12 +100,12 @@ class AdminProductController extends Controller
             'category_id'       => 'required|exists:product_categories,id',
             'subcategory_id'    => 'nullable|exists:product_subcategories,id',
 
-            'name'              => 'required|string|max:200',
-            'subtitle'          => 'nullable|string|max:300',
+            'name'              => 'required',
+            'subtitle'          => 'nullable',
             'brand'             => 'nullable|string|max:120',
 
-            'short_description' => 'nullable|string|max:500',
-            'description'       => 'nullable|string',
+            'short_description' => 'nullable',
+            'description'       => 'nullable',
 
             'order'             => 'nullable|string|max:10|regex:/^[A-Z]*$/',
 
@@ -115,6 +119,10 @@ class AdminProductController extends Controller
             'brand_logo'        => 'nullable|image|max:2048',
 
         ]);
+
+        foreach (['name', 'subtitle', 'short_description', 'description'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
 
 
         /*
@@ -197,17 +205,17 @@ class AdminProductController extends Controller
             'product' => [
 
                 'id'                => $product->id,
-                'name'              => $product->name,
+                'name'              => Translation::payload($product->getRawOriginal('name')),
                 'slug'              => $product->slug,
-                'subtitle'          => $product->subtitle,
+                'subtitle'          => Translation::payload($product->getRawOriginal('subtitle')),
                 'brand'             => $product->brand,
 
                 'brand_logo_url'    => $product->brand_logo
                     ? Storage::url($product->brand_logo)
                     : null,
 
-                'short_description' => $product->short_description,
-                'description'       => $product->description,
+                'short_description' => Translation::payload($product->getRawOriginal('short_description')),
+                'description'       => Translation::payload($product->getRawOriginal('description')),
 
                 'image_url'         => $product->image_url,
                 'video'             => $product->video,
@@ -223,14 +231,14 @@ class AdminProductController extends Controller
 
                 'specifications' => $product->specifications->map(fn($s) => [
                     'id'=>$s->id,
-                    'name'=>$s->name,
-                    'value'=>$s->value,
+                    'name'=>Translation::payload($s->getRawOriginal('name')),
+                    'value'=>Translation::payload($s->getRawOriginal('value')),
                     'order'=>$s->order,
                 ]),
 
                 'downloads' => $product->downloads->map(fn($d) => [
                     'id'=>$d->id,
-                    'name'=>$d->name,
+                    'name'=>Translation::payload($d->getRawOriginal('name')),
                     'file_url'=>$d->file_url,
                     'type'=>$d->type,
                     'size'=>$d->size,
@@ -240,10 +248,12 @@ class AdminProductController extends Controller
             ],
 
             'categories' => ProductCategory::orderBy('name')
-                ->get(['id','name']),
+                ->get(['id','name'])
+                ->map(fn($c) => ['id' => $c->id, 'name' => Translation::payload($c->getRawOriginal('name'))]),
 
             'subcategories' => ProductSubcategory::orderBy('name')
-                ->get(['id','name','category_id']),
+                ->get(['id','name','category_id'])
+                ->map(fn($s) => ['id' => $s->id, 'name' => Translation::payload($s->getRawOriginal('name')), 'category_id' => $s->category_id]),
         ]);
     }
 
@@ -263,12 +273,12 @@ class AdminProductController extends Controller
             'category_id'       => 'required|exists:product_categories,id',
             'subcategory_id'    => 'nullable|exists:product_subcategories,id',
 
-            'name'              => 'required|string|max:200',
-            'subtitle'          => 'nullable|string|max:300',
+            'name'              => 'required',
+            'subtitle'          => 'nullable',
             'brand'             => 'nullable|string|max:120',
 
-            'short_description' => 'nullable|string|max:500',
-            'description'       => 'nullable|string',
+            'short_description' => 'nullable',
+            'description'       => 'nullable',
 
             'order'             => 'nullable|string|max:10|regex:/^[A-Z]*$/',
 
@@ -282,6 +292,10 @@ class AdminProductController extends Controller
             'brand_logo'        => 'nullable|image|max:2048',
 
         ]);
+
+        foreach (['name', 'subtitle', 'short_description', 'description'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
 
 
         /*

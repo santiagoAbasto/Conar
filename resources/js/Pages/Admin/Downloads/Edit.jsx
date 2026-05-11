@@ -1,13 +1,14 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
+import TranslatableField, { asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 export default function DownloadsEdit({ download }) {
     const { data, setData, post, processing, errors } = useForm({
         _method: "PUT",
-        name: download.name || "",
-        category: download.category || "",
-        description: download.description || "",
+        name: asTranslations(download.name || ""),
+        category: asTranslations(download.category || ""),
+        description: asTranslations(download.description || ""),
         order: download.order ?? 0,
         is_active: download.is_active ?? true,
         file: null,
@@ -25,24 +26,15 @@ export default function DownloadsEdit({ download }) {
                     <button onClick={() => history.back()} className="p-2 rounded-lg hover:bg-gray-100 text-gray-500"><Icon icon="solar:arrow-left-outline" width={18} /></button>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">Editar Descarga</h1>
-                        <p className="text-sm text-gray-500">{download.name}</p>
+                        <p className="text-sm text-gray-500">{t(download.name)}</p>
                     </div>
                 </div>
 
                 <form onSubmit={submit} className="space-y-6">
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                            <input type="text" value={data.name} onChange={(e) => setData("name", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Categoría</label>
-                            <input type="text" value={data.category} onChange={(e) => setData("category", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Descripción</label>
-                            <textarea value={data.description} onChange={(e) => setData("description", e.target.value)} rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none" />
-                        </div>
+                        <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
+                        <TranslatableField label="Categoría" value={data.category} onChange={(v) => setData("category", v)} error={errors.category} />
+                        <TranslatableField label="Descripción" value={data.description} onChange={(v) => setData("description", v)} type="textarea" rows={2} error={errors.description} />
                         {download.file_url && (
                             <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
                                 <Icon icon="solar:file-download-outline" width={16} className="text-[#25A7CA]" />

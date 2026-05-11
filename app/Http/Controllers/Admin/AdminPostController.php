@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Support\Translation;
 
 class AdminPostController extends Controller
 {
@@ -23,9 +24,9 @@ class AdminPostController extends Controller
         return Inertia::render('Admin/Posts/Index', [
             'posts'   => $query->paginate(20)->through(fn($p) => [
                 'id'           => $p->id,
-                'title'        => is_array($p->title) ? ($p->title['es'] ?? $p->title[array_key_first($p->title)] ?? '') : $p->title,
+                'title'        => Translation::payload($p->getRawOriginal('title')),
                 'slug'         => $p->slug,
-                'category'     => $p->category,
+                'category'     => Translation::payload($p->getRawOriginal('category')),
                 'is_active'    => $p->is_active,
                 'is_featured'  => $p->is_featured,
                 'published_at' => $p->published_at?->format('d/m/Y'),
@@ -44,10 +45,10 @@ class AdminPostController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'        => 'required|string|max:300',
-            'excerpt'      => 'nullable|string|max:500',
-            'content'      => 'nullable|string',
-            'category'     => 'nullable|string|max:120',
+            'title'        => 'required',
+            'excerpt'      => 'nullable',
+            'content'      => 'nullable',
+            'category'     => 'nullable',
             'order'        => 'nullable|string|max:10',
             'is_active'    => 'boolean',
             'is_featured'  => 'boolean',
@@ -59,10 +60,11 @@ class AdminPostController extends Controller
             $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
-        $data['title']       = ['es' => $data['title']];
-        $data['excerpt']     = isset($data['excerpt']) ? ['es' => $data['excerpt']] : null;
-        $data['content']     = isset($data['content']) ? ['es' => $data['content']] : null;
-        $data['slug']        = Str::slug($request->title);
+        $data['title']       = Translation::input($request->input('title'));
+        $data['excerpt']     = Translation::input($request->input('excerpt'));
+        $data['content']     = Translation::input($request->input('content'));
+        $data['category']    = Translation::input($request->input('category'));
+        $data['slug']        = $this->uniqueSlug($data['title']['es']);
         $data['is_active']   = $request->boolean('is_active', true);
         $data['is_featured'] = $request->boolean('is_featured', false);
         $data['order']       = strtoupper(trim($data['order'] ?? 'A')) ?: 'A';
@@ -78,11 +80,11 @@ class AdminPostController extends Controller
         return Inertia::render('Admin/Posts/Edit', [
             'post' => [
                 'id'           => $post->id,
-                'title'        => is_array($post->title) ? ($post->title['es'] ?? '') : $post->title,
-                'excerpt'      => is_array($post->excerpt) ? ($post->excerpt['es'] ?? '') : $post->excerpt,
-                'content'      => is_array($post->content) ? ($post->content['es'] ?? '') : $post->content,
+                'title'        => Translation::payload($post->getRawOriginal('title')),
+                'excerpt'      => Translation::payload($post->getRawOriginal('excerpt')),
+                'content'      => Translation::payload($post->getRawOriginal('content')),
                 'slug'         => $post->slug,
-                'category'     => $post->category,
+                'category'     => Translation::payload($post->getRawOriginal('category')),
                 'image_url'    => $post->image_url,
                 'is_active'    => $post->is_active,
                 'is_featured'  => $post->is_featured,
@@ -95,10 +97,10 @@ class AdminPostController extends Controller
     public function update(Request $request, Post $post)
     {
         $data = $request->validate([
-            'title'        => 'required|string|max:300',
-            'excerpt'      => 'nullable|string|max:500',
-            'content'      => 'nullable|string',
-            'category'     => 'nullable|string|max:120',
+            'title'        => 'required',
+            'excerpt'      => 'nullable',
+            'content'      => 'nullable',
+            'category'     => 'nullable',
             'order'        => 'nullable|string|max:10',
             'is_active'    => 'boolean',
             'is_featured'  => 'boolean',
@@ -112,9 +114,10 @@ class AdminPostController extends Controller
             unset($data['image']);
         }
 
-        $data['title']       = ['es' => $data['title']];
-        $data['excerpt']     = isset($data['excerpt']) ? ['es' => $data['excerpt']] : null;
-        $data['content']     = isset($data['content']) ? ['es' => $data['content']] : null;
+        $data['title']       = Translation::input($request->input('title'));
+        $data['excerpt']     = Translation::input($request->input('excerpt'));
+        $data['content']     = Translation::input($request->input('content'));
+        $data['category']    = Translation::input($request->input('category'));
         $data['is_active']   = $request->boolean('is_active', true);
         $data['is_featured'] = $request->boolean('is_featured', false);
         $data['order']       = strtoupper(trim($data['order'] ?? 'A')) ?: 'A';
@@ -152,5 +155,19 @@ class AdminPostController extends Controller
         $data = $request->validate(['order' => 'required|string|max:10']);
         $post->update(['order' => strtoupper(trim($data['order'])) ?: 'A']);
         return back()->with('success', 'Orden actualizado.');
+    }
+
+    private function uniqueSlug(string $title): string
+    {
+        $base = Str::slug($title) ?: 'novedad';
+        $slug = $base;
+        $counter = 2;
+
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 }

@@ -4,13 +4,14 @@ import { Icon } from "@iconify/react";
 
 import RichTextEditor from "@/Components/Admin/RichTextEditor";
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField from "@/Components/Admin/TranslatableField";
 
 export default function PostsCreate() {
     const { data, setData, post, processing, errors } = useForm({
-        title: "",
-        excerpt: "",
-        content: "",
-        category: "",
+        title: { es: "", pt: "", en: "" },
+        excerpt: { es: "", pt: "", en: "" },
+        content: { es: "", pt: "", en: "" },
+        category: { es: "", pt: "", en: "" },
         published_at: "",
         order: "A",
         is_active: true,
@@ -33,23 +34,12 @@ export default function PostsCreate() {
 
                 <form onSubmit={submit} className="space-y-6">
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Título *</label>
-                            <input type="text" value={data.title} onChange={(e) => setData("title", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                            {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Extracto</label>
-                            <textarea value={data.excerpt} onChange={(e) => setData("excerpt", e.target.value)} rows={3} placeholder="Resumen breve para la vista de lista..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none resize-none" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-2">Contenido completo</label>
-                            <RichTextEditor value={data.content} onChange={(v) => setData("content", v)} placeholder="Cuerpo completo de la novedad..." />
-                        </div>
+                        <TranslatableField label="Título" value={data.title} onChange={(v) => setData("title", v)} required error={errors.title} />
+                        <TranslatableField label="Extracto" value={data.excerpt} onChange={(v) => setData("excerpt", v)} type="textarea" rows={3} placeholder="Resumen breve para la vista de lista..." />
+                        <TranslatableField label="Contenido completo" value={data.content} onChange={(v) => setData("content", v)} type="rich" placeholder="Cuerpo completo de la novedad..." />
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="block text-sm text-gray-600 mb-1">Categoría</label>
-                                <input type="text" value={data.category} onChange={(e) => setData("category", e.target.value)} placeholder="Empresa, Productos, Eventos..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none" />
+                                <TranslatableField label="Categoría" value={data.category} onChange={(v) => setData("category", v)} placeholder="Empresa, Productos, Eventos..." />
                             </div>
                             <div>
                                 <label className="block text-sm text-gray-600 mb-1">Fecha de publicación</label>

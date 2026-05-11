@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Download;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Support\Translation;
 
 class AdminDownloadController extends Controller
 {
@@ -14,9 +15,9 @@ class AdminDownloadController extends Controller
         return Inertia::render('Admin/Downloads/Index', [
             'downloads' => Download::orderBy('order')->orderBy('name')->get()->map(fn($d) => [
                 'id'          => $d->id,
-                'name'        => $d->name,
-                'category'    => $d->category,
-                'description' => $d->description,
+                'name'        => Translation::payload($d->getRawOriginal('name')),
+                'category'    => Translation::payload($d->getRawOriginal('category')),
+                'description' => Translation::payload($d->getRawOriginal('description')),
                 'size'        => $d->size,
                 'file_url'    => $d->file_url,
                 'is_active'   => $d->is_active,
@@ -33,13 +34,17 @@ class AdminDownloadController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:255',
-            'category'    => 'nullable|string|max:120',
-            'description' => 'nullable|string|max:500',
+            'name'        => 'required',
+            'category'    => 'nullable',
+            'description' => 'nullable',
             'order'       => 'nullable|integer|min:0',
             'is_active'   => 'boolean',
             'file'        => 'required|file|max:20480',
         ]);
+
+        foreach (['name', 'category', 'description'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
@@ -59,9 +64,9 @@ class AdminDownloadController extends Controller
         return Inertia::render('Admin/Downloads/Edit', [
             'download' => [
                 'id'          => $download->id,
-                'name'        => $download->name,
-                'category'    => $download->category,
-                'description' => $download->description,
+                'name'        => Translation::payload($download->getRawOriginal('name')),
+                'category'    => Translation::payload($download->getRawOriginal('category')),
+                'description' => Translation::payload($download->getRawOriginal('description')),
                 'size'        => $download->size,
                 'file_url'    => $download->file_url,
                 'is_active'   => $download->is_active,
@@ -73,13 +78,17 @@ class AdminDownloadController extends Controller
     public function update(Request $request, Download $download)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:255',
-            'category'    => 'nullable|string|max:120',
-            'description' => 'nullable|string|max:500',
+            'name'        => 'required',
+            'category'    => 'nullable',
+            'description' => 'nullable',
             'order'       => 'nullable|integer|min:0',
             'is_active'   => 'boolean',
             'file'        => 'nullable|file|max:20480',
         ]);
+
+        foreach (['name', 'category', 'description'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');

@@ -2,15 +2,15 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 
-import RichTextEditor from "@/Components/Admin/RichTextEditor";
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField, { asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 export default function SectorsEdit({ industry }) {
     const { data, setData, post, processing, errors } = useForm({
         _method: "PUT",
-        title: industry.title || "",
-        name: industry.name || "",
-        description: industry.description || "",
+        title: asTranslations(industry.title || ""),
+        name: asTranslations(industry.name || ""),
+        description: asTranslations(industry.description || ""),
         order: industry.order || "A",
         is_active: industry.is_active ?? true,
         image: null,
@@ -28,23 +28,14 @@ export default function SectorsEdit({ industry }) {
                     <button onClick={() => history.back()} className="p-2 rounded-lg hover:bg-gray-100 text-gray-500"><Icon icon="solar:arrow-left-outline" width={18} /></button>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">Editar Sector</h1>
-                        <p className="text-sm text-gray-500">{industry.name}</p>
+                        <p className="text-sm text-gray-500">{t(industry.name)}</p>
                     </div>
                 </div>
                 <form onSubmit={submit} className="space-y-6">
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                            <input type="text" value={data.name} onChange={(e) => setData("name", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Título (etiqueta)</label>
-                            <input type="text" value={data.title} onChange={(e) => setData("title", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-2">Descripción</label>
-                            <RichTextEditor value={data.description} onChange={(v) => setData("description", v)} />
-                        </div>
+                        <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
+                        <TranslatableField label="Título (etiqueta)" value={data.title} onChange={(v) => setData("title", v)} error={errors.title} />
+                        <TranslatableField label="Descripción" value={data.description} onChange={(v) => setData("description", v)} type="rich" error={errors.description} />
                     </div>
 
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">

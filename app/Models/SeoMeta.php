@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Support\Translation;
 
 class SeoMeta extends Model
 {
@@ -18,5 +19,20 @@ class SeoMeta extends Model
     public function getOgImageUrlAttribute(): ?string
     {
         return $this->og_image ? url(Storage::url($this->og_image)) : null;
+    }
+
+    public function getTitleAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getDescriptionAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getKeywordsAttribute($value): ?string
+    {
+        return Translation::text($value);
     }
 }

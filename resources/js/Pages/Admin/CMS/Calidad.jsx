@@ -104,8 +104,8 @@ export default function Calidad({ page, sections }) {
         <AdminLayout>
             <div className="max-w-3xl">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">CMS – Calidad</h1>
-                    <p className="text-sm text-gray-500">Gestión del contenido de la página "Calidad"</p>
+                    <h1 className="text-2xl font-bold text-gray-800">Calidad</h1>
+                    <p className="text-sm text-gray-500">Editá los textos que aparecen en la página "Calidad".</p>
                 </div>
                 <div className="space-y-4">
                     {sections.map((s) => <SectionCard key={s.id} section={s} onDelete={deleteSection} />)}

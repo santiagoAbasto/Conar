@@ -2,6 +2,7 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { router, useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import TranslatableField, { asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 /* ── Toggle switch ───────────────────────────────────── */
 function Toggle({ checked, onChange, label, description }) {
@@ -33,7 +34,7 @@ function SubcategoryModal({ subcategory, categories, onClose }) {
     const isEdit = !!subcategory;
     const { data, setData, post, processing, errors } = useForm({
         _method:       isEdit ? "PUT" : undefined,
-        name:          subcategory?.name || "",
+        name:          asTranslations(subcategory?.name || ""),
         category_id:   subcategory?.category?.id || subcategory?.category_id || (categories[0]?.id ?? ""),
         order:         subcategory?.order ?? "",
         is_active:     subcategory?.is_active ?? true,
@@ -78,7 +79,7 @@ function SubcategoryModal({ subcategory, categories, onClose }) {
                             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
                         >
                             {categories.map((c) => (
-                                <option key={c.id} value={c.id}>{c.name}</option>
+                                <option key={c.id} value={c.id}>{t(c.name)}</option>
                             ))}
                         </select>
                         {errors.category_id && (
@@ -87,16 +88,7 @@ function SubcategoryModal({ subcategory, categories, onClose }) {
                     </div>
 
                     {/* Nombre */}
-                    <div>
-                        <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                        <input
-                            type="text"
-                            value={data.name}
-                            onChange={(e) => setData("name", e.target.value)}
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
-                        />
-                        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                    </div>
+                    <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
 
                     {/* Imagen */}
                     <div>
@@ -229,11 +221,11 @@ export default function SubcategoriesIndex({ subcategories, categories }) {
                             <tr key={s.id} className="hover:bg-gray-50/50">
                                 {/* Nombre */}
                                 <td className="px-5 py-3">
-                                    <span className="font-medium text-gray-800">{s.name}</span>
+                                    <span className="font-medium text-gray-800">{t(s.name)}</span>
                                 </td>
 
                                 {/* Categoría */}
-                                <td className="px-5 py-3 text-gray-500">{s.category?.name || "—"}</td>
+                                <td className="px-5 py-3 text-gray-500">{t(s.category?.name, "—")}</td>
 
                                 {/* Productos */}
                                 <td className="px-5 py-3 text-center text-gray-500">{s.products_count}</td>

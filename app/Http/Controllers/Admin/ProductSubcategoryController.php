@@ -7,6 +7,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Support\Translation;
 
 class ProductSubcategoryController extends Controller
 {
@@ -20,22 +21,24 @@ class ProductSubcategoryController extends Controller
                 ->get()
                 ->map(fn($s) => [
                     'id'             => $s->id,
-                    'name'           => $s->name,
+                    'name'           => Translation::payload($s->getRawOriginal('name')),
                     'slug'           => $s->slug,
                     'is_active'      => $s->is_active,
                     'show_in_home'   => $s->show_in_home,
                     'order'          => $s->order,
                     'products_count' => $s->products_count,
-                    'category'       => $s->category ? ['id' => $s->category->id, 'name' => $s->category->name] : null,
+                    'category'       => $s->category ? ['id' => $s->category->id, 'name' => Translation::payload($s->category->getRawOriginal('name'))] : null,
                 ]),
-            'categories' => ProductCategory::orderBy('name')->get(['id', 'name']),
+            'categories' => ProductCategory::orderBy('name')->get(['id', 'name'])
+                ->map(fn($c) => ['id' => $c->id, 'name' => Translation::payload($c->getRawOriginal('name'))]),
         ]);
     }
 
     public function create()
     {
         return Inertia::render('Admin/Subcategories/Create', [
-            'categories' => ProductCategory::orderBy('name')->get(['id', 'name']),
+            'categories' => ProductCategory::orderBy('name')->get(['id', 'name'])
+                ->map(fn($c) => ['id' => $c->id, 'name' => Translation::payload($c->getRawOriginal('name'))]),
         ]);
     }
 
@@ -43,12 +46,14 @@ class ProductSubcategoryController extends Controller
     {
         $data = $request->validate([
             'category_id'  => 'required|exists:product_categories,id',
-            'name'         => 'required|string|max:120',
+            'name'         => 'required',
             'order'        => 'nullable|string|max:10|regex:/^[A-Z]*$/',
             'is_active'    => 'boolean',
             'show_in_home' => 'boolean',
             'image'        => 'nullable|image|max:4096',
         ]);
+
+        $data['name'] = Translation::input($request->input('name'));
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('subcategories', 'public');
@@ -68,14 +73,15 @@ class ProductSubcategoryController extends Controller
         return Inertia::render('Admin/Subcategories/Edit', [
             'subcategory' => [
                 'id'           => $subcategory->id,
-                'name'         => $subcategory->name,
+                'name'         => Translation::payload($subcategory->getRawOriginal('name')),
                 'slug'         => $subcategory->slug,
                 'category_id'  => $subcategory->category_id,
                 'is_active'    => $subcategory->is_active,
                 'show_in_home' => $subcategory->show_in_home,
                 'order'        => $subcategory->order,
             ],
-            'categories' => ProductCategory::orderBy('name')->get(['id', 'name']),
+            'categories' => ProductCategory::orderBy('name')->get(['id', 'name'])
+                ->map(fn($c) => ['id' => $c->id, 'name' => Translation::payload($c->getRawOriginal('name'))]),
         ]);
     }
 
@@ -83,12 +89,14 @@ class ProductSubcategoryController extends Controller
     {
         $data = $request->validate([
             'category_id'  => 'required|exists:product_categories,id',
-            'name'         => 'required|string|max:120',
+            'name'         => 'required',
             'order'        => 'nullable|string|max:10|regex:/^[A-Z]*$/',
             'is_active'    => 'boolean',
             'show_in_home' => 'boolean',
             'image'        => 'nullable|image|max:4096',
         ]);
+
+        $data['name'] = Translation::input($request->input('name'));
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('subcategories', 'public');

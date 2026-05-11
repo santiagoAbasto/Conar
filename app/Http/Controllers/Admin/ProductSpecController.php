@@ -6,19 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductSpecification;
 use Illuminate\Http\Request;
+use App\Support\Translation;
 
 class ProductSpecController extends Controller
 {
     public function store(Request $request, Product $product)
     {
         $data = $request->validate([
-            'name'  => 'required|string|max:200',
-            'value' => 'nullable|string|max:500',
+            'name'  => 'required',
+            'value' => 'nullable',
             'order' => 'nullable|integer|min:0',
         ]);
 
         // Evita NULL en la BD
-        $data['value'] = $data['value'] ?? '';
+        $data['name'] = Translation::input($request->input('name'));
+        $data['value'] = Translation::input($request->input('value'));
 
         $data['product_id'] = $product->id;
         $data['is_active']  = true;
@@ -37,12 +39,13 @@ class ProductSpecController extends Controller
     public function update(Request $request, Product $product, ProductSpecification $spec)
     {
         $data = $request->validate([
-            'name'  => 'required|string|max:200',
-            'value' => 'nullable|string|max:500',
+            'name'  => 'required',
+            'value' => 'nullable',
         ]);
 
         // Evita NULL en BD
-        $data['value'] = $data['value'] ?? '';
+        $data['name'] = Translation::input($request->input('name'));
+        $data['value'] = Translation::input($request->input('value'));
 
         $spec->update($data);
 

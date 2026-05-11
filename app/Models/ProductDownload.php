@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Translation;
 
 class ProductDownload extends Model
 {
@@ -22,6 +23,7 @@ class ProductDownload extends Model
     ];
 
     protected $casts = [
+        'name' => 'array',
         'is_active'    => 'boolean',
         'is_principal' => 'boolean',
     ];
@@ -39,5 +41,10 @@ class ProductDownload extends Model
     public function getFileUrlAttribute()
     {
         return asset('storage/' . $this->file);
+    }
+
+    public function getNameAttribute($value): ?string
+    {
+        return Translation::text($value);
     }
 }

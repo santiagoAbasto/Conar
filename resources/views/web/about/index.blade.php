@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@section('title','Nosotros')
+@section('title', __('Nosotros'))
 
 @section('content')
 
@@ -20,11 +20,7 @@ $calidad = $page->sections->where('type','about_calidad')->first();
 
 function cms_text($value)
 {
-if(is_array($value)){
-$value = $value['es'] ?? reset($value);
-}
-
-$value = $value ?? '';
+$value = tr_text($value) ?? '';
 
 $value = str_replace('&nbsp;',' ',$value);
 
@@ -42,11 +38,11 @@ return trim($value);
 
         <span>
 
-            <a href="{{ route('home') }}">Inicio</a>
+            <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
 
             &rsaquo;
 
-            Nosotros
+            {{ __('Nosotros') }}
 
         </span>
 
@@ -70,7 +66,7 @@ return trim($value);
 
                 <h1 class="nosotros-hero__title">
 
-                    {{ cms_text($main->title ?? 'Quienes somos') }}
+                    {{ cms_text($main->title ?? __('Quienes somos')) }}
 
                 </h1>
 
@@ -131,7 +127,7 @@ return trim($value);
 
         <h2 class="nosotros-values__title">
 
-            ¿Por qué elegirnos?
+            {{ __('¿Por qué elegirnos?') }}
 
         </h2>
 
@@ -157,7 +153,7 @@ return trim($value);
 
                 <h3 class="nosotros-card__title">
 
-                    {{ cms_text($mision->title ?? 'Misión') }}
+                    {{ cms_text($mision->title ?? __('Misión')) }}
 
                 </h3>
 
@@ -193,7 +189,7 @@ return trim($value);
 
                 <h3 class="nosotros-card__title">
 
-                    {{ cms_text($vision->title ?? 'Visión') }}
+                    {{ cms_text($vision->title ?? __('Visión')) }}
 
                 </h3>
 
@@ -225,7 +221,7 @@ return trim($value);
 
                 <h3 class="nosotros-card__title">
 
-                    {{ cms_text($calidad->title ?? 'Calidad') }}
+                    {{ cms_text($calidad->title ?? __('Calidad')) }}
 
                 </h3>
 

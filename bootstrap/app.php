@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'detect.bot' => \App\Http\Middleware\DetectBotMiddleware::class,
+            'locale' => \App\Http\Middleware\SetLocale::class,
         ]);
 
     })

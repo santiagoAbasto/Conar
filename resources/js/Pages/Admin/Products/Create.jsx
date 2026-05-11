@@ -3,6 +3,7 @@ import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
 import RichTextEditor from "@/Components/Admin/RichTextEditor";
+import TranslatableField, { t } from "@/Components/Admin/TranslatableField";
 
 /* ── Toggle switch reutilizable ─────────────────────── */
 function Toggle({ checked, onChange, label, description }) {
@@ -40,12 +41,12 @@ export default function ProductCreate({ categories, subcategories }) {
         category_id: "",
         subcategory_id: "",
 
-        name: "",
-        subtitle: "",
+        name: { es: "", pt: "", en: "" },
+        subtitle: { es: "", pt: "", en: "" },
         brand: "",
 
-        short_description: "",
-        description: "",
+        short_description: { es: "", pt: "", en: "" },
+        description: { es: "", pt: "", en: "" },
 
         order: "",
 
@@ -193,8 +194,20 @@ export default function ProductCreate({ categories, subcategories }) {
                             Información general
                         </h2>
 
-                        {field("Nombre *", "name")}
-                        {field("Subtítulo", "subtitle")}
+                        <TranslatableField
+                            label="Nombre"
+                            value={data.name}
+                            onChange={(v) => setData("name", v)}
+                            required
+                            error={errors.name}
+                        />
+
+                        <TranslatableField
+                            label="Subtítulo"
+                            value={data.subtitle}
+                            onChange={(v) => setData("subtitle", v)}
+                            error={errors.subtitle}
+                        />
 
                         {/* Marca */}
 
@@ -247,7 +260,7 @@ export default function ProductCreate({ categories, subcategories }) {
 
                                     {categories.map((c) => (
                                         <option key={c.id} value={c.id}>
-                                            {c.name}
+                                            {t(c.name)}
                                         </option>
                                     ))}
 
@@ -270,7 +283,7 @@ export default function ProductCreate({ categories, subcategories }) {
 
                                     {filteredSubcats.map((s) => (
                                         <option key={s.id} value={s.id}>
-                                            {s.name}
+                                            {t(s.name)}
                                         </option>
                                     ))}
 
@@ -283,36 +296,25 @@ export default function ProductCreate({ categories, subcategories }) {
 
                         {/* SHORT DESCRIPTION */}
 
-                        <div>
-
-                            <label className="block text-sm text-gray-600 mb-1">
-                                Descripción corta
-                            </label>
-
-                            <textarea
-                                value={data.short_description}
-                                onChange={(e) => setData("short_description", e.target.value)}
-                                rows={3}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2"
-                            />
-
-                        </div>
+                        <TranslatableField
+                            label="Descripción corta"
+                            value={data.short_description}
+                            onChange={(v) => setData("short_description", v)}
+                            type="textarea"
+                            rows={3}
+                            error={errors.short_description}
+                        />
 
 
                         {/* DESCRIPTION */}
 
-                        <div>
-
-                            <label className="block text-sm text-gray-600 mb-2">
-                                Descripción completa
-                            </label>
-
-                            <RichTextEditor
-                                value={data.description}
-                                onChange={(v) => setData("description", v)}
-                            />
-
-                        </div>
+                        <TranslatableField
+                            label="Descripción completa"
+                            value={data.description}
+                            onChange={(v) => setData("description", v)}
+                            type="rich"
+                            error={errors.description}
+                        />
 
                     </div>
 

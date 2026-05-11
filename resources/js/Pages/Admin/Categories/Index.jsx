@@ -3,13 +3,14 @@ import { router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 import { useForm } from "@inertiajs/react";
 import { useState } from "react";
+import TranslatableField, { asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 function CategoryModal({ category, colorPalette, suggestedColor, onClose }) {
     const isEdit = !!category;
     const { data, setData, post, processing, errors } = useForm({
         _method: isEdit ? "PUT" : undefined,
-        name: category?.name || "",
-        description: category?.description || "",
+        name: asTranslations(category?.name || ""),
+        description: asTranslations(category?.description || ""),
         order: category?.order || "A",
         color: category?.color || suggestedColor,
         is_active: category?.is_active ?? true,
@@ -32,15 +33,8 @@ function CategoryModal({ category, colorPalette, suggestedColor, onClose }) {
                     <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg"><Icon icon="solar:close-square-outline" width={18} /></button>
                 </div>
                 <form onSubmit={submit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                        <input type="text" value={data.name} onChange={(e) => setData("name", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                    </div>
-                    <div>
-                        <label className="block text-sm text-gray-600 mb-1">Descripción</label>
-                        <textarea value={data.description} onChange={(e) => setData("description", e.target.value)} rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30 resize-none" />
-                    </div>
+                    <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
+                    <TranslatableField label="Descripción" value={data.description} onChange={(v) => setData("description", v)} type="textarea" rows={3} error={errors.description} />
                     <div>
                         <div className="flex items-center justify-between mb-2">
                             <label className="block text-sm text-gray-600">Color de categoría</label>
@@ -148,7 +142,7 @@ export default function CategoriesIndex({ categories, colorPalette = [], suggest
                                 <td className="px-5 py-3">
                                     <div className="flex items-center gap-3">
                                         {c.image_url ? <img src={c.image_url} className="w-8 h-8 rounded-lg object-cover" alt="" /> : <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><Icon icon="solar:folder-outline" width={14} className="text-gray-400" /></div>}
-                                        <span className="font-medium text-gray-800">{c.name}</span>
+                                        <span className="font-medium text-gray-800">{t(c.name)}</span>
                                     </div>
                                 </td>
                                 <td className="px-5 py-3 text-center">
@@ -157,7 +151,7 @@ export default function CategoriesIndex({ categories, colorPalette = [], suggest
                                         <span className="font-mono text-xs text-gray-500">{c.color}</span>
                                     </div>
                                 </td>
-                                <td className="px-5 py-3 text-gray-500 truncate max-w-[250px]">{c.description || '—'}</td>
+                                <td className="px-5 py-3 text-gray-500 truncate max-w-[250px]">{t(c.description, '—')}</td>
                                 <td className="px-5 py-3 text-center text-gray-500">{c.products_count}</td>
                                 <td className="px-5 py-3 text-center">
                                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${c.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{c.is_active ? 'Activo' : 'Inactivo'}</span>

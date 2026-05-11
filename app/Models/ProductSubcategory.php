@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Support\Translation;
 
 class ProductSubcategory extends Model
 {
@@ -23,6 +24,7 @@ class ProductSubcategory extends Model
     ];
 
     protected $casts = [
+        'name' => 'array',
         'is_active'    => 'boolean',
         'show_in_home' => 'boolean',
     ];
@@ -47,6 +49,11 @@ class ProductSubcategory extends Model
         return $this->belongsTo(ImportRun::class, 'last_import_run_id');
     }
 
+    public function getNameAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | AUTO SLUG
@@ -57,13 +64,13 @@ class ProductSubcategory extends Model
     {
         static::creating(function ($subcategory) {
             if (!$subcategory->slug) {
-                $subcategory->slug = Str::slug($subcategory->name);
+                $subcategory->slug = Str::slug(Translation::text($subcategory->getRawOriginal('name'), 'es') ?: $subcategory->name);
             }
         });
 
         static::updating(function ($subcategory) {
             if ($subcategory->isDirty('name') && !$subcategory->isDirty('slug')) {
-                $subcategory->slug = Str::slug($subcategory->name);
+                $subcategory->slug = Str::slug(Translation::text($subcategory->getRawOriginal('name'), 'es') ?: $subcategory->name);
             }
         });
     }

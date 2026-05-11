@@ -2,8 +2,8 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm, router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
-import RichTextEditor from "@/Components/Admin/RichTextEditor";
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField, { LANGUAGES, asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 /* ── Toggle switch reutilizable ─────────────────────── */
 function Toggle({ checked, onChange, label, description }) {
@@ -28,24 +28,48 @@ function Toggle({ checked, onChange, label, description }) {
     );
 }
 
-/* ── Especificaciones técnicas ────────────────────────── */
+function TranslationPreview({ value, valueSuffix }) {
+    const translations = asTranslations(value);
+
+    return (
+        <div className="space-y-1.5">
+            {LANGUAGES.map((lang) => {
+                const text = translations[lang.key] || "";
+
+                return (
+                    <div key={lang.key} className="grid grid-cols-[92px_1fr] gap-2 items-start">
+                        <span className="inline-flex h-6 items-center justify-center rounded-md bg-gray-100 text-[11px] font-semibold text-gray-500">
+                            {lang.label}
+                        </span>
+                        <span className="text-sm text-gray-700 leading-6">
+                            {text || <span className="text-gray-300">Sin texto</span>}
+                            {text && valueSuffix ? valueSuffix(lang.key) : null}
+                        </span>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+/* ── Características del producto ─────────────────────── */
 function SpecsSection({ product }) {
     const [specs, setSpecs] = useState(product.specifications || []);
-    const [newName, setNewName] = useState("");
+    const [newName, setNewName] = useState({ es: "", pt: "", en: "" });
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
 
     const addSpec = (e) => {
         e.preventDefault();
-        if (!newName.trim()) return;
+        if (!t(newName).trim()) return;
         router.post(
             `/admin/products/${product.id}/specs`,
-            { name: newName.trim() },
+            { name: newName },
             {
                 preserveScroll: true,
                 onSuccess: (page) => {
                     setSpecs(page.props.product?.specifications ?? specs);
-                    setNewName("");
+                    setNewName({ es: "", pt: "", en: "" });
                 },
             }
         );
@@ -53,7 +77,10 @@ function SpecsSection({ product }) {
 
     const startEdit = (spec) => {
         setEditingId(spec.id);
-        setEditData({ name: spec.name, value: spec.value || "" });
+        setEditData({
+            name: asTranslations(spec.name),
+            value: asTranslations(spec.value || ""),
+        });
     };
 
     const saveEdit = (specId) => {
@@ -87,7 +114,7 @@ function SpecsSection({ product }) {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <h2 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
                 <Icon icon="solar:checklist-outline" width={18} className="text-[#25A7CA]" />
-                Características técnicas
+                Características del producto
             </h2>
 
             <div className="space-y-2 mb-4">
@@ -100,26 +127,44 @@ function SpecsSection({ product }) {
                         className="flex items-center gap-2 p-2 rounded-lg border border-gray-100 bg-gray-50/50"
                     >
                         {editingId === spec.id ? (
-                            <>
-                                <input
-                                    autoFocus
-                                    type="text"
+                            <div className="flex-1 space-y-3">
+                                <TranslatableField
+                                    label="Característica"
                                     value={editData.name}
-                                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); saveEdit(spec.id); } if (e.key === "Escape") setEditingId(null); }}
-                                    className="flex-1 border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
+                                    onChange={(v) => setEditData({ ...editData, name: v })}
                                 />
-                                <button type="button" onClick={() => saveEdit(spec.id)} className="p-1.5 rounded-lg bg-[#25A7CA] text-white hover:bg-[#1d96b8]">
+                                <TranslatableField
+                                    label="Valor"
+                                    value={editData.value}
+                                    onChange={(v) => setEditData({ ...editData, value: v })}
+                                />
+                                <div className="flex justify-end gap-2">
+                                    <button type="button" onClick={() => saveEdit(spec.id)} className="p-1.5 rounded-lg bg-[#25A7CA] text-white hover:bg-[#1d96b8]">
                                     <Icon icon="solar:check-read-outline" width={14} />
-                                </button>
-                                <button type="button" onClick={() => setEditingId(null)} className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500">
-                                    <Icon icon="solar:close-square-outline" width={14} />
-                                </button>
-                            </>
+                                    </button>
+                                    <button type="button" onClick={() => setEditingId(null)} className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500">
+                                        <Icon icon="solar:close-square-outline" width={14} />
+                                    </button>
+                                </div>
+                            </div>
                         ) : (
                             <>
                                 <Icon icon="solar:check-circle-outline" width={15} className="text-[#25A7CA] flex-shrink-0" />
-                                <span className="flex-1 text-sm text-gray-700">{spec.name}</span>
+                                <div className="flex-1">
+                                    <TranslationPreview
+                                        value={spec.name}
+                                        valueSuffix={(locale) => {
+                                            const specName = asTranslations(spec.name || "")[locale]?.trim();
+                                            const specValue = asTranslations(spec.value || "")[locale];
+
+                                            if (!specValue?.trim() || specValue.trim() === specName) {
+                                                return null;
+                                            }
+
+                                            return <span className="text-gray-400">: {specValue}</span>;
+                                        }}
+                                    />
+                                </div>
                                 <button type="button" onClick={() => startEdit(spec)} className="p-1.5 rounded-lg hover:bg-gray-200 text-gray-500">
                                     <Icon icon="solar:pen-outline" width={14} />
                                 </button>
@@ -132,14 +177,15 @@ function SpecsSection({ product }) {
                 ))}
             </div>
 
-            <form onSubmit={addSpec} className="flex gap-2">
-                <input
-                    type="text"
+            <form onSubmit={addSpec} className="flex gap-2 items-start">
+                <div className="flex-1">
+                    <TranslatableField
+                    label="Nueva característica"
                     value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
+                    onChange={setNewName}
                     placeholder="Ej: Rango de medición: 0–100 bar"
-                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
                 />
+                </div>
                 <button type="submit" className="flex items-center gap-1.5 px-4 py-2 bg-[#25A7CA] text-white rounded-lg text-sm font-medium hover:bg-[#1d96b8] transition">
                     <Icon icon="solar:add-circle-outline" width={16} />
                     Agregar
@@ -155,7 +201,7 @@ function DownloadsSection({ product }) {
     const [dlFileInfo, setDlFileInfo] = useState(null);
 
     const { data, setData, post, processing, reset } = useForm({
-        name: "",
+        name: { es: "", pt: "", en: "" },
         file: null,
         type: "",
     });
@@ -227,14 +273,14 @@ function DownloadsSection({ product }) {
                             }`}
                     >
                         <Icon
-                            icon={/\.(mp4|webm|mov|avi)$/i.test(dl.name) ? "solar:play-circle-outline" : "solar:file-text-outline"}
+                            icon={/\.(mp4|webm|mov|avi)$/i.test(t(dl.name)) ? "solar:play-circle-outline" : "solar:file-text-outline"}
                             width={18}
                             className="text-gray-400 flex-shrink-0"
                         />
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-800 truncate">{dl.name}</p>
-                            <p className="text-xs text-gray-400">{[dl.type, dl.size].filter(Boolean).join(" · ")}</p>
-                        </div>
+	                        <div className="flex-1 min-w-0">
+	                            <TranslationPreview value={dl.name} />
+	                            <p className="text-xs text-gray-400 mt-1">{[dl.type, dl.size].filter(Boolean).join(" · ")}</p>
+	                        </div>
 
                         <button
                             type="button"
@@ -272,13 +318,12 @@ function DownloadsSection({ product }) {
 
                 <div className="grid grid-cols-2 gap-3">
                     <div>
-                        <label className="block text-xs text-gray-500 mb-1">Nombre del archivo *</label>
-                        <input
-                            type="text"
+                        <TranslatableField
+                            label="Nombre del archivo"
                             value={data.name}
-                            onChange={(e) => setData("name", e.target.value)}
+                            onChange={(v) => setData("name", v)}
                             placeholder="Ej: Ficha técnica v2"
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
+                            required
                         />
                     </div>
                     <div>
@@ -321,7 +366,7 @@ function DownloadsSection({ product }) {
                     </div>
                     <button
                         type="submit"
-                        disabled={processing || !data.file || !data.name}
+                        disabled={processing || !data.file || !t(data.name)}
                         className="flex items-center gap-1.5 px-4 py-2 bg-[#25A7CA] text-white rounded-lg text-sm font-medium hover:bg-[#1d96b8] disabled:opacity-50 transition whitespace-nowrap"
                     >
                         <Icon icon={processing ? "solar:refresh-outline" : "solar:upload-outline"} width={16} className={processing ? "animate-spin" : ""} />
@@ -339,11 +384,11 @@ export default function ProductEdit({ product, categories, subcategories }) {
         _method: "PUT",
         category_id: product.category_id || "",
         subcategory_id: product.subcategory_id || "",
-        name: product.name || "",
-        subtitle: product.subtitle || "",
+        name: asTranslations(product.name),
+        subtitle: asTranslations(product.subtitle),
         brand: product.brand || "",
-        short_description: product.short_description || "",
-        description: product.description || "",
+        short_description: asTranslations(product.short_description),
+        description: asTranslations(product.description),
         order: product.order ?? "",
         is_active: product.is_active ?? true,
         is_featured: product.is_featured ?? false,
@@ -410,7 +455,7 @@ export default function ProductEdit({ product, categories, subcategories }) {
                     </button>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">Editar Producto</h1>
-                        <p className="text-sm text-gray-500">{product.name}</p>
+                        <p className="text-sm text-gray-500">{t(product.name)}</p>
                     </div>
                 </div>
 
@@ -419,16 +464,9 @@ export default function ProductEdit({ product, categories, subcategories }) {
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-semibold text-gray-700">Información general</h2>
 
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                            <input type="text" value={data.name} onChange={(e) => setData("name", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                        </div>
+                        <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
 
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Subtítulo</label>
-                            <input type="text" value={data.subtitle} onChange={(e) => setData("subtitle", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
+                        <TranslatableField label="Subtítulo" value={data.subtitle} onChange={(v) => setData("subtitle", v)} error={errors.subtitle} />
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -453,27 +491,21 @@ export default function ProductEdit({ product, categories, subcategories }) {
                                 <label className="block text-sm text-gray-600 mb-1">Categoría *</label>
                                 <select value={data.category_id} onChange={(e) => setData("category_id", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30">
                                     <option value="">Seleccionar...</option>
-                                    {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                    {categories.map((c) => <option key={c.id} value={c.id}>{t(c.name)}</option>)}
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-sm text-gray-600 mb-1">Subcategoría</label>
                                 <select value={data.subcategory_id} onChange={(e) => setData("subcategory_id", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30">
                                     <option value="">Sin subcategoría</option>
-                                    {filteredSubcats.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                    {filteredSubcats.map((s) => <option key={s.id} value={s.id}>{t(s.name)}</option>)}
                                 </select>
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Descripción corta</label>
-                            <textarea value={data.short_description} onChange={(e) => setData("short_description", e.target.value)} rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30 resize-none" />
-                        </div>
+                        <TranslatableField label="Descripción corta" value={data.short_description} onChange={(v) => setData("short_description", v)} type="textarea" rows={3} error={errors.short_description} />
 
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-2">Descripción completa</label>
-                            <RichTextEditor value={data.description} onChange={(v) => setData("description", v)} />
-                        </div>
+                        <TranslatableField label="Descripción completa" value={data.description} onChange={(v) => setData("description", v)} type="rich" error={errors.description} />
                     </div>
 
                     {/* Multimedia principal */}

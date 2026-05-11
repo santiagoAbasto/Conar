@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Support\Translation;
 
 class ProductCategory extends Model
 {
@@ -22,6 +23,8 @@ class ProductCategory extends Model
     ];
 
     protected $casts = [
+        'name' => 'array',
+        'description' => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -107,6 +110,16 @@ class ProductCategory extends Model
         return $palette[$index];
     }
 
+    public function getNameAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getDescriptionAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
     public static function suggestedColor(): string
     {
         $count = static::query()->count();
@@ -134,18 +147,18 @@ class ProductCategory extends Model
     {
         static::creating(function ($category) {
             if (!$category->slug) {
-                $category->slug = Str::slug($category->name);
+                $category->slug = Str::slug(Translation::text($category->getRawOriginal('name'), 'es') ?: $category->name);
             }
 
             if (!$category->color) {
-                $name = Str::of($category->name)->ascii()->lower()->squish()->toString();
+                $name = Str::of(Translation::text($category->getRawOriginal('name'), 'es') ?: $category->name)->ascii()->lower()->squish()->toString();
                 $category->color = self::NAMED_COLORS[$name] ?? self::suggestedColor();
             }
         });
 
         static::updating(function ($category) {
             if ($category->isDirty('name') && !$category->isDirty('slug')) {
-                $category->slug = Str::slug($category->name);
+                $category->slug = Str::slug(Translation::text($category->getRawOriginal('name'), 'es') ?: $category->name);
             }
         });
     }

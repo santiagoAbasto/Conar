@@ -118,6 +118,10 @@ return [
     'to' => [
         'address' => env('MAIL_TO_ADDRESS', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
         'name' => env('MAIL_TO_NAME', env('MAIL_FROM_NAME', 'Example')),
+        'addresses' => array_values(array_filter(array_map(
+            'trim',
+            explode(',', env('MAIL_TO_ADDRESSES', env('MAIL_TO_ADDRESS', env('MAIL_FROM_ADDRESS', 'admin@conar.com')) . ',soporte@conar.com.ar,dda@conar.com.ar'))
+        ))),
     ],
 
 ];

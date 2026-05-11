@@ -7,6 +7,7 @@ use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Support\Translation;
 
 class ProductCategoryController extends Controller
 {
@@ -18,9 +19,9 @@ class ProductCategoryController extends Controller
                 ->get()
                 ->map(fn($c) => [
                     'id'            => $c->id,
-                    'name'          => $c->name,
+                    'name'          => Translation::payload($c->getRawOriginal('name')),
                     'slug'          => $c->slug,
-                    'description'   => $c->description,
+                    'description'   => Translation::payload($c->getRawOriginal('description')),
                     'image_url'     => $c->image_url,
                     'color'         => $c->color,
                     'is_active'     => $c->is_active,
@@ -40,8 +41,8 @@ class ProductCategoryController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:120',
-            'description' => 'nullable|string|max:500',
+            'name'        => 'required',
+            'description' => 'nullable',
             'order'       => 'nullable|string|max:10',
             'color'       => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'is_active'   => 'boolean',
@@ -52,7 +53,9 @@ class ProductCategoryController extends Controller
             $data['image'] = $request->file('image')->store('categories', 'public');
         }
 
-        $data['slug']      = Str::slug($data['name']);
+        $data['name']      = Translation::input($request->input('name'));
+        $data['description'] = Translation::input($request->input('description'));
+        $data['slug']      = Str::slug($data['name']['es']);
         $data['is_active'] = $request->boolean('is_active', true);
         $data['order']     = strtoupper(trim($data['order'] ?? '')) ?: 'A';
         $data['color']     = strtoupper($data['color'] ?: ProductCategory::suggestedColor());
@@ -68,9 +71,9 @@ class ProductCategoryController extends Controller
         return Inertia::render('Admin/Categories/Edit', [
             'category' => [
                 'id'          => $category->id,
-                'name'        => $category->name,
+                'name'        => Translation::payload($category->getRawOriginal('name')),
                 'slug'        => $category->slug,
-                'description' => $category->description,
+                'description' => Translation::payload($category->getRawOriginal('description')),
                 'image_url'   => $category->image_url,
                 'color'       => $category->color,
                 'is_active'   => $category->is_active,
@@ -82,8 +85,8 @@ class ProductCategoryController extends Controller
     public function update(Request $request, ProductCategory $category)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:120',
-            'description' => 'nullable|string|max:500',
+            'name'        => 'required',
+            'description' => 'nullable',
             'order'       => 'nullable|string|max:10',
             'color'       => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'is_active'   => 'boolean',
@@ -97,6 +100,8 @@ class ProductCategoryController extends Controller
         }
 
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['name']      = Translation::input($request->input('name'));
+        $data['description'] = Translation::input($request->input('description'));
         $data['order']     = strtoupper(trim($data['order'] ?? '')) ?: 'A';
         $data['color']     = strtoupper($data['color'] ?: $category->color);
         $category->update($data);

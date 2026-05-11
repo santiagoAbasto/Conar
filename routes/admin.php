@@ -52,6 +52,8 @@ Route::get('/about',          [AdminCmsController::class, 'about'])->name('about
 Route::get('/cms/calidad',    [AdminCmsController::class, 'calidad'])->name('cms.calidad');
 Route::get('/contacto',       [AdminCmsController::class, 'contacto'])->name('contacto.index');
 Route::post('/contacto/info', [AdminCmsController::class, 'updateContactInfo'])->name('contacto.updateInfo');
+Route::get('/extras/footer',  [AdminCmsController::class, 'footer'])->name('extras.footer.edit');
+Route::post('/extras/footer', [AdminCmsController::class, 'updateFooter'])->name('extras.footer.update');
 
 Route::post('/pages/{page}/sections',          [AdminCmsController::class, 'storeSection'])->name('pages.sections.store');
 Route::put('/sections/{section}',              [AdminCmsController::class, 'updateSection'])->name('sections.update');

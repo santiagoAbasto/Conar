@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\Translation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,9 +15,9 @@ class AdminFloatingWhatsappController extends Controller
         $footer = json_decode(Setting::where('key', 'footer')->value('value') ?? '{}', true) ?: [];
         $settings = json_decode(Setting::where('key', 'floating_whatsapp')->value('value') ?? '{}', true) ?: [];
 
-        $phone = $settings['phone'] ?? ($footer['phone'] ?? '');
-        $message = $settings['message'] ?? 'Hola, quiero hacer una consulta desde la web de CONAR.';
-        $label = $settings['label'] ?? 'WhatsApp';
+        $phone = Translation::text($settings['phone'] ?? ($footer['phone'] ?? '')) ?? '';
+        $message = Translation::text($settings['message'] ?? 'Hola, quiero hacer una consulta desde la web de CONAR.') ?? '';
+        $label = Translation::text($settings['label'] ?? 'WhatsApp') ?? 'WhatsApp';
         $isActive = array_key_exists('is_active', $settings) ? (bool) $settings['is_active'] : true;
 
         return Inertia::render('Admin/Extras/FloatingWhatsapp', [

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Http\Controllers\ProfileController;
@@ -23,121 +24,72 @@ use App\Http\Controllers\Web\SearchController;
 
 /*
 |--------------------------------------------------------------------------
-| HOME
+| WEB PUBLICA MULTIDIOMA
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/idioma/{locale}', function (Request $request, string $locale) {
+    abort_unless(in_array($locale, ['es', 'pt', 'en'], true), 404);
 
+    $request->session()->put('locale', $locale);
 
-/*
-|--------------------------------------------------------------------------
-| BUSCADOR
-|--------------------------------------------------------------------------
-*/
+    return redirect()->back()->withCookie(cookie('locale', $locale, 60 * 24 * 365));
+})->name('language.switch');
 
-Route::get('/buscador', [SearchController::class, 'index'])->name('search');
+Route::get('/{locale}/{path?}', function (Request $request, string $locale, ?string $path = null) {
+    $request->session()->put('locale', $locale);
+    $target = url($path ? '/' . ltrim($path, '/') : '/');
 
+    return redirect($target)->withCookie(cookie('locale', $locale, 60 * 24 * 365));
+})->whereIn('locale', ['es', 'pt', 'en'])->where('path', '.*');
 
-/*
-|--------------------------------------------------------------------------
-| NOSOTROS
-|--------------------------------------------------------------------------
-*/
+Route::middleware('locale')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/nosotros', [AboutController::class, 'index'])
-    ->name('nosotros');
+    Route::get('/buscador', [SearchController::class, 'index'])->name('search');
 
+    Route::get('/nosotros', [AboutController::class, 'index'])
+        ->name('nosotros');
 
-/*
-|--------------------------------------------------------------------------
-| PRODUCTOS
-|--------------------------------------------------------------------------
-*/
+    Route::get('/productos', [ProductController::class, 'index'])
+        ->name('products.index');
 
-Route::get('/productos', [ProductController::class, 'index'])
-    ->name('products.index');
+    Route::get('/productos/{categoria}', [ProductController::class, 'category'])
+        ->name('products.category');
 
-Route::get('/productos/{categoria}', [ProductController::class, 'category'])
-    ->name('products.category');
+    Route::get('/productos/{categoria}/{subcategoria}', [ProductController::class, 'subcategory'])
+        ->name('products.subcategory');
 
-Route::get('/productos/{categoria}/{subcategoria}', [ProductController::class, 'subcategory'])
-    ->name('products.subcategory');
+    Route::get('/producto/{slug}', [ProductController::class, 'show'])
+        ->name('products.show');
 
-Route::get('/producto/{slug}', [ProductController::class, 'show'])
-    ->name('products.show');
+    Route::get('/industrias', [IndustryController::class, 'index'])
+        ->name('industries.index');
 
+    Route::get('/industria/{slug}', [IndustryController::class, 'show'])
+        ->name('industries.show');
 
-/*
-|--------------------------------------------------------------------------
-| INDUSTRIAS
-|--------------------------------------------------------------------------
-*/
+    Route::get('/novedades', [PostController::class, 'index'])
+        ->name('posts.index');
 
-Route::get('/industrias', [IndustryController::class, 'index'])
-    ->name('industries.index');
+    Route::get('/novedades/{slug}', [PostController::class, 'show'])
+        ->name('posts.show');
 
-Route::get('/industria/{slug}', [IndustryController::class, 'show'])
-    ->name('industries.show');
+    Route::get('/contacto', [ContactController::class, 'index'])
+        ->name('contact.index');
 
+    Route::post('/contacto', [ContactController::class, 'store'])
+        ->name('contact.store');
 
-/*
-|--------------------------------------------------------------------------
-| NOVEDADES (BLOG)
-|--------------------------------------------------------------------------
-*/
+    Route::get('/presupuesto', [QuoteController::class, 'index'])
+        ->name('presupuesto');
 
-Route::get('/novedades', [PostController::class, 'index'])
-    ->name('posts.index');
+    Route::post('/presupuesto', [QuoteController::class, 'store'])
+        ->name('quote.store');
 
-Route::get('/novedades/{slug}', [PostController::class, 'show'])
-    ->name('posts.show');
-
-
-/*
-|--------------------------------------------------------------------------
-| CONTACTO
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/contacto', [ContactController::class, 'index'])
-    ->name('contact.index');
-
-Route::post('/contacto', [ContactController::class, 'store'])
-    ->name('contact.store');
-
-
-/*
-|--------------------------------------------------------------------------
-| COTIZACION / PRESUPUESTO
-|--------------------------------------------------------------------------
-*/
-
-Route::post('/presupuesto', [QuoteController::class, 'store'])
-    ->name('quote.store');
-
-
-/*
-|--------------------------------------------------------------------------
-| NEWSLETTER
-|--------------------------------------------------------------------------
-*/
-
-Route::post('/newsletter', [NewsletterController::class, 'store'])
-    ->name('newsletter.store');
-
-
-/*
-|--------------------------------------------------------------------------
-| PRESUPUESTO (PAGE)
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/presupuesto', [QuoteController::class, 'index'])
-    ->name('presupuesto');
-
-Route::post('/presupuesto', [QuoteController::class, 'store'])
-    ->name('quote.store');
+    Route::post('/newsletter', [NewsletterController::class, 'store'])
+        ->name('newsletter.store');
+});
 
 
 

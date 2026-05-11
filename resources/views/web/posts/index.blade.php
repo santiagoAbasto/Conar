@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@section('title', 'Novedades')
+@section('title', __('Novedades'))
 
 @section('content')
 
@@ -9,9 +9,9 @@
 <div class="container">
 
 <div class="breadcrumb">
-    <a href="{{ route('home') }}">Inicio</a>
+    <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
     <span>›</span>
-    <span>Novedades</span>
+    <span>{{ __('Novedades') }}</span>
 </div>
 
 <div class="novedades__grid">
@@ -47,7 +47,7 @@
             @endif
 
             <div class="news-card__more">
-                <span class="news-card__more-text">Leer más</span>
+                <span class="news-card__more-text">{{ __('Leer más') }}</span>
                 <span class="news-card__arrow" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="#546F5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Support\Translation;
 
 class Post extends Model
 {
@@ -21,6 +22,10 @@ class Post extends Model
     ];
 
     protected $casts = [
+        'title'        => 'array',
+        'excerpt'      => 'array',
+        'content'      => 'array',
+        'category'     => 'array',
         'published_at' => 'datetime',
         'is_active'    => 'boolean',
         'is_featured'  => 'boolean',
@@ -81,8 +86,8 @@ class Post extends Model
 
         if (json_last_error() === JSON_ERROR_NONE) {
 
-            if (is_array($decoded) && isset($decoded['es'])) {
-                return $decoded['es'];
+            if (is_array($decoded)) {
+                return Translation::text($decoded);
             }
 
             if (is_string($decoded)) {
@@ -95,20 +100,25 @@ class Post extends Model
 
     public function getTitleAttribute($value)
     {
-        return $this->cleanJsonText($value);
+        return Translation::text($this->cleanJsonText($value));
     }
 
     public function getExcerptAttribute($value)
     {
-        return $this->cleanJsonText($value);
+        return Translation::text($this->cleanJsonText($value));
     }
 
     public function getContentAttribute($value)
     {
-        $clean = $this->cleanJsonText($value);
+        $clean = Translation::text($this->cleanJsonText($value));
 
         // eliminar etiquetas HTML peligrosas o innecesarias
         return strip_tags($clean, '<p><br>');
+    }
+
+    public function getCategoryAttribute($value)
+    {
+        return Translation::text($this->cleanJsonText($value));
     }
 
     /*

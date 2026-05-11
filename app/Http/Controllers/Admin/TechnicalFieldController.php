@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TechnicalField;
 use App\Models\ProductSubcategory;
 use Illuminate\Http\Request;
+use App\Support\Translation;
 
 class TechnicalFieldController extends Controller
 {
@@ -52,7 +53,7 @@ class TechnicalFieldController extends Controller
     {
         $request->validate([
             'subcategory_id' => 'required|exists:product_subcategories,id',
-            'label'          => 'required|string|max:120',
+            'label'          => 'required',
             'name'           => 'required|string|max:80|regex:/^[a-z0-9_]+$/',
             'type'           => 'required|in:text,number,select',
             'order'          => 'nullable|integer|min:0',
@@ -60,14 +61,14 @@ class TechnicalFieldController extends Controller
 
         TechnicalField::create([
             'subcategory_id' => $request->subcategory_id,
-            'label'          => $request->label,
+            'label'          => Translation::input($request->input('label')),
             'name'           => $request->name,
             'type'           => $request->type,
             'order'          => $request->order ?? 0,
         ]);
 
         return redirect('/admin/technical-fields')
-            ->with('success', 'Campo técnico creado.');
+            ->with('success', 'Campo del formulario creado.');
     }
 
 
@@ -90,7 +91,7 @@ class TechnicalFieldController extends Controller
     {
         $request->validate([
             'subcategory_id' => 'required|exists:product_subcategories,id',
-            'label'          => 'required|string|max:120',
+            'label'          => 'required',
             'name'           => 'required|string|max:80|regex:/^[a-z0-9_]+$/',
             'type'           => 'required|in:text,number,select',
             'order'          => 'nullable|integer|min:0',
@@ -98,14 +99,14 @@ class TechnicalFieldController extends Controller
 
         $technicalField->update([
             'subcategory_id' => $request->subcategory_id,
-            'label'          => $request->label,
+            'label'          => Translation::input($request->input('label')),
             'name'           => $request->name,
             'type'           => $request->type,
             'order'          => $request->order ?? 0,
         ]);
 
         return redirect('/admin/technical-fields')
-            ->with('success', 'Campo técnico actualizado.');
+            ->with('success', 'Campo del formulario actualizado.');
     }
 
 
@@ -120,7 +121,7 @@ class TechnicalFieldController extends Controller
         $technicalField->delete();
 
         return redirect('/admin/technical-fields')
-            ->with('success', 'Campo técnico eliminado.');
+            ->with('success', 'Campo del formulario eliminado.');
     }
 
 }

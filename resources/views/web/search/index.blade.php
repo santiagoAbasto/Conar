@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@section('title', $q ? "Búsqueda: {$q}" : 'Buscador')
+@section('title', $q ? __('Búsqueda') . ": {$q}" : __('Buscador'))
 
 @section('content')
 
@@ -9,9 +9,9 @@
 
     {{-- BREADCRUMB --}}
     <div class="breadcrumb">
-        <a href="{{ route('home') }}">Inicio</a>
+        <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
         <span>›</span>
-        <span>Buscador</span>
+        <span>{{ __('Buscador') }}</span>
     </div>
 
     {{-- FORM DE BÚSQUEDA --}}
@@ -24,32 +24,32 @@
                 type="text"
                 name="q"
                 value="{{ $q }}"
-                placeholder="Buscar productos, categorías, marcas..."
+                placeholder="{{ __('Buscar productos, categorías, marcas...') }}"
                 class="search-page__input"
                 autofocus
                 autocomplete="off"
             >
             @if($q)
-            <a href="{{ route('search') }}" class="search-page__clear" aria-label="Limpiar búsqueda">
+            <a href="{{ route('search') }}" class="search-page__clear" aria-label="{{ __('Limpiar búsqueda') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path d="M18 6L6 18M6 6L18 18" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </a>
             @endif
         </div>
-        <button type="submit" class="search-page__btn">Buscar</button>
+        <button type="submit" class="search-page__btn">{{ __('Buscar') }}</button>
     </form>
 
     {{-- ENCABEZADO DE RESULTADOS --}}
     <div class="search-page__meta">
         @if($q)
             <p class="search-page__count">
-                <strong>{{ $results->count() }}</strong> resultado{{ $results->count() !== 1 ? 's' : '' }}
-                para <span class="search-page__query">"{{ $q }}"</span>
+                <strong>{{ $results->count() }}</strong> {{ $results->count() === 1 ? __('resultado') : __('resultados') }}
+                {{ __('para') }} <span class="search-page__query">"{{ $q }}"</span>
             </p>
         @else
             <p class="search-page__count">
-                <strong>{{ $results->count() }}</strong> productos disponibles
+                <strong>{{ $results->count() }}</strong> {{ __('productos disponibles') }}
             </p>
         @endif
     </div>
@@ -57,8 +57,8 @@
     {{-- GRID DE RESULTADOS --}}
     @if($results->isEmpty())
         <div class="search-page__empty">
-            <p>No encontramos productos que coincidan con <strong>"{{ $q }}"</strong>.</p>
-            <p>Intentá con otras palabras o explorá nuestros <a href="{{ route('products.index') }}">productos</a>.</p>
+            <p>{{ __('No encontramos productos que coincidan con') }} <strong>"{{ $q }}"</strong>.</p>
+            <p>{{ __('Intentá con otras palabras o explorá nuestros') }} <a href="{{ route('products.index') }}">{{ __('productos') }}</a>.</p>
         </div>
     @else
         <div class="search-page__grid products-subcategory">

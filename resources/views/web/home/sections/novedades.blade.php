@@ -10,8 +10,8 @@
 
         {{-- HEADER --}}
         <div class="novedades__header">
-            <h2 class="novedades__title">Novedades</h2>
-            <a href="{{ route('posts.index') }}" class="novedades__ver-todas">Ver todas</a>
+            <h2 class="novedades__title">{{ __('Novedades') }}</h2>
+            <a href="{{ route('posts.index') }}" class="novedades__ver-todas">{{ __('Ver todas') }}</a>
         </div>
 
         {{-- SLIDER WRAPPER --}}
@@ -52,7 +52,7 @@
                             @endif
 
                             <div class="news-card__more">
-                                <span class="news-card__more-text">Leer más</span>
+                                <span class="news-card__more-text">{{ __('Leer más') }}</span>
                                 <span class="news-card__arrow" aria-hidden="true">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                         <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="#546F5D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,7 +75,7 @@
         @if($totalGroups > 1)
         <div class="novedades__dots">
             @foreach($postGroups as $i => $group)
-            <button class="novedades__dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="Página {{ $i + 1 }}"></button>
+            <button class="novedades__dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="{{ __('Página') }} {{ $i + 1 }}"></button>
             @endforeach
         </div>
         @endif

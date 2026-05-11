@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Translation;
 
 class TechnicalField extends Model
 {
@@ -14,6 +15,10 @@ class TechnicalField extends Model
         'order',
     ];
 
+    protected $casts = [
+        'label' => 'array',
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | RELACIONES
@@ -23,5 +28,10 @@ class TechnicalField extends Model
     public function subcategory()
     {
         return $this->belongsTo(ProductSubcategory::class);
+    }
+
+    public function getLabelAttribute($value): ?string
+    {
+        return Translation::text($value);
     }
 }

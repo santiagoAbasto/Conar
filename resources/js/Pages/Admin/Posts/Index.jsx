@@ -2,6 +2,7 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { t } from "@/Components/Admin/TranslatableField";
 
 /* Switch "En Home" */
 function HomeSwitch({ postId, value }) {
@@ -134,7 +135,7 @@ export default function PostsIndex({ posts, filters }) {
                     <thead>
                         <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
                             <th className="px-4 py-3 text-center w-16">
-                                <div className="flex items-center justify-center gap-1" title="Orden alfanumérico — A, B, C, AA, AB...">
+                                <div className="flex items-center justify-center gap-1" title="Orden en la web">
                                     <Icon icon="solar:sort-by-alphabet-outline" width={13} />
                                     Orden
                                 </div>
@@ -175,14 +176,13 @@ export default function PostsIndex({ posts, filters }) {
                                             </div>
                                         )}
                                         <div className="min-w-0">
-                                            <p className="font-medium text-gray-800 truncate max-w-[260px]">{p.title}</p>
-                                            <p className="text-xs text-gray-400">{p.slug}</p>
+                                            <p className="font-medium text-gray-800 truncate max-w-[260px]">{t(p.title)}</p>
                                         </div>
                                     </div>
                                 </td>
 
                                 {/* Categoría */}
-                                <td className="px-5 py-3 text-gray-500">{p.category || "—"}</td>
+                                <td className="px-5 py-3 text-gray-500">{t(p.category, "—")}</td>
 
                                 {/* Publicado */}
                                 <td className="px-5 py-3 text-center text-gray-500">{p.published_at || "—"}</td>
@@ -231,11 +231,6 @@ export default function PostsIndex({ posts, filters }) {
                 )}
             </div>
 
-            {/* LEYENDA */}
-            <p className="text-xs text-gray-400 mt-3 flex items-center gap-1">
-                <Icon icon="solar:info-circle-outline" width={13} />
-                El orden es alfanumérico: A, B, C… Z, AA, AB… — Click en el badge para editar.
-            </p>
         </AdminLayout>
     );
 }

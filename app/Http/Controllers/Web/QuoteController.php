@@ -7,6 +7,7 @@ use App\Mail\QuoteRequestNotificationMail;
 use App\Models\QuoteRequest;
 use App\Models\Product;
 use App\Models\ProductSubcategory;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -149,13 +150,22 @@ class QuoteController extends Controller
         ]);
 
         try {
-            Mail::to(config('mail.to.address'), config('mail.to.name'))
+            Mail::to($this->notificationRecipients())
                 ->send(new QuoteRequestNotificationMail($quoteRequest, $files));
         } catch (\Exception $e) {
             logger()->error('Error enviando notificación de presupuesto: ' . $e->getMessage());
         }
 
         return back()->with('success', 'Solicitud enviada correctamente.');
+    }
+
+    private function notificationRecipients(): array
+    {
+        $footer = json_decode(Setting::where('key', 'footer')->value('value') ?? '{}', true);
+        $configured = $footer['mail_recipients'] ?? '';
+        $recipients = array_filter(array_map('trim', explode(',', $configured)));
+
+        return $recipients ?: config('mail.to.addresses', [config('mail.to.address')]);
     }
 
 }

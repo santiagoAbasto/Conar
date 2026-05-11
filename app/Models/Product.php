@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Support\Translation;
 
 class Product extends Model
 {
@@ -31,6 +32,10 @@ class Product extends Model
     ];
 
     protected $casts = [
+        'name'         => 'array',
+        'subtitle'     => 'array',
+        'short_description' => 'array',
+        'description'  => 'array',
         'is_featured'  => 'boolean',
         'is_active'    => 'boolean',
         'show_in_home' => 'boolean',
@@ -102,6 +107,26 @@ class Product extends Model
         return $this->mediaUrl($this->image);
     }
 
+    public function getNameAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getSubtitleAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getShortDescriptionAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getDescriptionAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
     public static function mediaUrl(?string $path): ?string
     {
         if (!$path) {
@@ -132,7 +157,7 @@ class Product extends Model
         static::creating(function ($product) {
 
             if (!$product->slug) {
-                $product->slug = Str::slug($product->name);
+                $product->slug = Str::slug(Translation::text($product->getRawOriginal('name'), 'es') ?: $product->name);
             }
         });
     }

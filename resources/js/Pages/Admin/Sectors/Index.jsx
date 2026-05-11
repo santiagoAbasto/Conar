@@ -1,6 +1,7 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
+import { t } from "@/Components/Admin/TranslatableField";
 
 export default function SectorsIndex({ industries }) {
     const destroy = (id) => {
@@ -39,8 +40,8 @@ export default function SectorsIndex({ industries }) {
                                     <div className="flex items-center gap-3">
                                         {i.image_url ? <img src={i.image_url} className="w-9 h-9 rounded-lg object-cover" alt="" /> : <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center"><Icon icon="solar:buildings-outline" width={16} className="text-gray-400" /></div>}
                                         <div>
-                                            <p className="font-medium text-gray-800">{i.name}</p>
-                                            {i.title && <p className="text-xs text-gray-400">{i.title}</p>}
+                                            <p className="font-medium text-gray-800">{t(i.name)}</p>
+                                            {t(i.title) && <p className="text-xs text-gray-400">{t(i.title)}</p>}
                                         </div>
                                     </div>
                                 </td>

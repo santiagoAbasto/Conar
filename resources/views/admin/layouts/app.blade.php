@@ -80,7 +80,7 @@ a:hover { text-decoration: underline; }
     <span class="admin-nav__brand">CONAR Admin</span>
     <a href="{{ route('admin.technical-fields.index') }}"
        class="admin-nav__link {{ request()->routeIs('admin.technical-fields*') ? 'active' : '' }}">
-        Campos Técnicos
+        Campos del formulario
     </a>
     <a href="{{ route('admin.dashboard') }}" class="admin-nav__link">Dashboard</a>
 </nav>

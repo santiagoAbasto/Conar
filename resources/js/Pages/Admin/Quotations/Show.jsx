@@ -19,7 +19,7 @@ function ProcessData({ data }) {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mt-6">
             <h2 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <Icon icon="solar:tuning-square-2-outline" width={16} className="text-[#25A7CA]" />
-                Datos técnicos del proceso
+                Datos del proceso
             </h2>
             <div className="grid sm:grid-cols-2 gap-3">
                 {Object.entries(data).map(([key, value]) => (

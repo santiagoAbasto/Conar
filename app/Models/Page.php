@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Translation;
 
 class Page extends Model
 {
@@ -23,5 +24,15 @@ class Page extends Model
     public function sections()
     {
         return $this->hasMany(PageSection::class)->orderBy('order');
+    }
+
+    public function getLocalizedTitleAttribute(): ?string
+    {
+        return Translation::text($this->title);
+    }
+
+    public function getLocalizedSubtitleAttribute(): ?string
+    {
+        return Translation::text($this->subtitle);
     }
 }

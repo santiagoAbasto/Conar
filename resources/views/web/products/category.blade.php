@@ -10,11 +10,11 @@
 
 <div class="breadcrumb">
 
-<a href="{{ route('home') }}">Inicio</a>
+<a href="{{ route('home') }}">{{ __('Inicio') }}</a>
 
 <span>›</span>
 
-<a href="{{ route('products.index') }}">Instrumental</a>
+<a href="{{ route('products.index') }}">{{ __('Instrumental') }}</a>
 
 <span>›</span>
 
@@ -30,7 +30,7 @@
 
 <aside class="products-sidebar">
 
-<h3>Categorías</h3>
+<h3>{{ __('Categorías') }}</h3>
 
 <ul>
 

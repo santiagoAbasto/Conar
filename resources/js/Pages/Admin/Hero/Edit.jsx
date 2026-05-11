@@ -2,17 +2,19 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 
-import RichTextEditor from "@/Components/Admin/RichTextEditor";
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField, { asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 export default function HeroEdit({ slide }) {
     const { data, setData, post, processing, errors } = useForm({
         _method: "PUT",
-        title: slide.title || "",
+        title: asTranslations(slide.title || ""),
+        subtitle: asTranslations(slide.subtitle || ""),
+        content: asTranslations(slide.content || ""),
         media_type: slide.media_type || "image",
         media: null,
         video_url: slide.video_url || "",
-        button_text: slide.button_text || "",
+        button_text: asTranslations(slide.button_text || ""),
         button_link: slide.button_link || "",
         order: slide.order ?? "A",
         is_active: slide.is_active ?? true,
@@ -55,7 +57,7 @@ export default function HeroEdit({ slide }) {
                     </button>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">Editar Slide</h1>
-                        <p className="text-sm text-gray-500">{slide.title || 'Sin título'}</p>
+                        <p className="text-sm text-gray-500">{t(slide.title, 'Sin título')}</p>
                     </div>
                 </div>
 
@@ -112,27 +114,19 @@ export default function HeroEdit({ slide }) {
                         </div>
                     </div>
 
-                    {/* Título */}
+                    {/* Contenido */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                        <h2 className="font-semibold text-gray-700">Título (texto enriquecido)</h2>
-                        <input
-                            type="text"
-                            value={data.title}
-                            onChange={(e) => setData("title", e.target.value)}
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30"
-                            placeholder="Título del slide"
-                        />
-                        {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+                        <h2 className="font-semibold text-gray-700">Contenido</h2>
+                        <TranslatableField label="Título" value={data.title} onChange={(v) => setData("title", v)} placeholder="Título del slide" error={errors.title} />
+                        <TranslatableField label="Subtítulo" value={data.subtitle} onChange={(v) => setData("subtitle", v)} placeholder="Subtítulo" error={errors.subtitle} />
+                        <TranslatableField label="Descripción" value={data.content} onChange={(v) => setData("content", v)} type="textarea" rows={3} error={errors.content} />
                     </div>
 
                     {/* CTA */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                         <h2 className="font-semibold text-gray-700">Botón (CTA)</h2>
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm text-gray-600 mb-1">Texto</label>
-                                <input type="text" value={data.button_text} onChange={(e) => setData("button_text", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                            </div>
+                            <TranslatableField label="Texto" value={data.button_text} onChange={(v) => setData("button_text", v)} />
                             <div>
                                 <label className="block text-sm text-gray-600 mb-1">URL</label>
                                 <input type="text" value={data.button_link} onChange={(e) => setData("button_link", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />

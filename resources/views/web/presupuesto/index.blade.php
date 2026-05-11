@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@section('title','Presupuesto')
+@section('title', __('Presupuesto'))
 
 @section('content')
 
@@ -9,9 +9,9 @@
 
 {{-- BREADCRUMB --}}
 <div class="breadcrumb">
-    <a href="{{ route('home') }}">Inicio</a>
+    <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
     <span>›</span>
-    <span>Solicitud de Cotización</span>
+    <span>{{ __('Solicitud de Cotización') }}</span>
 </div>
 
 {{-- Mensaje de éxito --}}
@@ -40,10 +40,10 @@
 
     {{-- Instrumental --}}
     <div class="form-group quote-field--instrumental">
-        <label>Instrumental*</label>
+        <label>{{ __('Instrumental') }}*</label>
         <div class="select-wrapper">
             <select id="instrumental-select" required>
-                <option value="">Seleccione</option>
+                <option value="">{{ __('Seleccione') }}</option>
                 @foreach($instrumentals as $instrumental)
                 <option
                     value="{{ $instrumental->id }}"
@@ -64,10 +64,10 @@
 
     {{-- Solución --}}
     <div class="form-group quote-field--solution">
-        <label>Solución*</label>
+        <label>{{ __('Solución') }}*</label>
         <div class="select-wrapper">
             <select name="solution" id="solution-select" required disabled>
-                <option value="">Primero seleccione Instrumental</option>
+                <option value="">{{ __('Primero seleccione Instrumental') }}</option>
             </select>
             <span class="select-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -82,13 +82,13 @@
 
     {{-- Cantidad --}}
     <div class="form-group quote-field--quantity">
-        <label>Cantidad</label>
+        <label>{{ __('Cantidad') }}</label>
         <input type="number" name="quantity" min="1" value="{{ old('quantity') }}">
     </div>
 
     {{-- Archivos --}}
     <div class="form-group quote-field--attachments">
-        <label>Adjuntar archivo</label>
+        <label>{{ __('Adjuntar archivo') }}</label>
         <label class="file-upload-label" for="file-upload-input">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M14.5 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V7.5L14.5 2Z" stroke="#25A7CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -96,11 +96,11 @@
                 <path d="M12 12V18" stroke="#25A7CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M15 15L12 12L9 15" stroke="#25A7CA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="file-upload-text" id="file-upload-text">Seleccionar archivo</span>
+            <span class="file-upload-text" id="file-upload-text">{{ __('Seleccionar archivo') }}</span>
             <input id="file-upload-input" type="file" name="attachments[]" multiple
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.dwg,.dxf">
         </label>
-        <small>Planos, fichas técnicas o documentos (PDF, DWG, XLS, JPG). Máx. 10 MB c/u.</small>
+        <small>{{ __('Planos, fichas técnicas o documentos (PDF, DWG, XLS, JPG). Máx. 10 MB c/u.') }}</small>
     </div>
 
     {{-- DIVISOR --}}
@@ -108,19 +108,19 @@
 
     {{-- Nombre --}}
     <div class="form-group quote-field--name">
-        <label>Nombre y apellido*</label>
+        <label>{{ __('Nombre y apellido') }}*</label>
         <input type="text" name="name" value="{{ old('name') }}" required>
     </div>
 
     {{-- Email --}}
     <div class="form-group quote-field--email">
-        <label>Email*</label>
+        <label>{{ __('Email') }}*</label>
         <input type="email" name="email" value="{{ old('email') }}" required>
     </div>
 
     {{-- Teléfono --}}
     <div class="form-group quote-field--phone">
-        <label>Teléfono*</label>
+        <label>{{ __('Teléfono') }}*</label>
         <input type="text" name="phone" value="{{ old('phone') }}" required>
     </div>
 
@@ -128,20 +128,20 @@
     <div class="quote-right-block">
 
         <div class="form-group quote-field--company">
-            <label>Empresa</label>
+            <label>{{ __('Empresa') }}</label>
             <input type="text" name="company" value="{{ old('company') }}">
         </div>
 
         <div class="quote-submit">
-            <span class="quote-required">*Campos Obligatorios</span>
-            <button type="submit">Enviar solicitud</button>
+            <span class="quote-required">*{{ __('Campos Obligatorios') }}</span>
+            <button type="submit">{{ __('Enviar solicitud') }}</button>
         </div>
 
     </div>
 
     {{-- Mensaje --}}
     <div class="form-group quote-field--message">
-        <label>Mensaje*</label>
+        <label>{{ __('Mensaje') }}*</label>
         <textarea name="message" rows="5" required>{{ old('message') }}</textarea>
     </div>
 

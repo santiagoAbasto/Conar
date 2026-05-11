@@ -1,6 +1,7 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
+import { t } from "@/Components/Admin/TranslatableField";
 
 export default function DownloadsIndex({ downloads }) {
     const destroy = (id) => {
@@ -42,12 +43,12 @@ export default function DownloadsIndex({ downloads }) {
                                             <Icon icon="solar:file-download-outline" width={16} className="text-[#25A7CA]" />
                                         </div>
                                         <div>
-                                            <p className="font-medium text-gray-800">{d.name}</p>
-                                            <p className="text-xs text-gray-400">{d.description || '—'}</p>
+                                            <p className="font-medium text-gray-800">{t(d.name)}</p>
+                                            <p className="text-xs text-gray-400">{t(d.description, '—')}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-5 py-3 text-gray-500">{d.category || '—'}</td>
+                                <td className="px-5 py-3 text-gray-500">{t(d.category, '—')}</td>
                                 <td className="px-5 py-3 text-center text-gray-500">{d.size || '—'}</td>
                                 <td className="px-5 py-3 text-center">
                                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${d.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{d.is_active ? 'Activo' : 'Inactivo'}</span>

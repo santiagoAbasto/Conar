@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
 
@@ -40,12 +40,12 @@ $_pageTitle  = $__env->hasSection('title') ? trim($__env->yieldContent('title'))
 $_adminTitle = $_seo?->title ?: null;
 $_metaTitle  = (!$_isDynamicDetailPage && $_adminTitle)
     ? $_adminTitle
-    : ($_pageTitle ? $_pageTitle . ' – CONAR' : ($_adminTitle ?: 'CONAR – Instrumentación Industrial'));
+    : ($_pageTitle ? $_pageTitle . ' – CONAR' : ($_adminTitle ?: __('CONAR – Instrumentación Industrial')));
 
 // ── Descripción final ───────────────────────────────────────────────────
 $_pageDesc  = $__env->hasSection('meta_description') ? trim($__env->yieldContent('meta_description')) : null;
 $_metaDesc  = $_pageDesc
-    ?: ($_seo?->description ?: 'CONAR – Equipos de instrumentación, medición y control industrial.');
+    ?: ($_seo?->description ?: __('CONAR – Equipos de instrumentación, medición y control industrial.'));
 @endphp
 
 <title>{{ $_metaTitle }}</title>

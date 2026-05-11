@@ -10,9 +10,9 @@
 
         {{-- BREADCRUMB --}}
         <div class="breadcrumb">
-            <a href="{{ route('home') }}">Inicio</a>
+            <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
             <span>›</span>
-            <a href="{{ route('products.index') }}">Instrumental</a>
+            <a href="{{ route('products.index') }}">{{ __('Instrumental') }}</a>
             <span>›</span>
             @if($product->subcategory && $product->subcategory->category)
             <a href="{{ route('products.category', $product->subcategory->category->slug) }}">{{ $product->subcategory->category->name }}</a>
@@ -173,12 +173,12 @@
                     <a href="{{ asset('storage/' . $download->file) }}"
                         download="Ficha-Tecnica-{{ Str::slug($product->name) }}.{{ strtolower($download->type) }}"
                         class="product-detail__btn product-detail__btn--outline">
-                        Ficha técnica
+                        {{ __('Ficha técnica') }}
                     </a>
                     @endif
                     <a href="{{ route('presupuesto') }}?product_id={{ $product->id }}"
                         class="product-detail__btn product-detail__btn--primary">
-                        Consultar
+                        {{ __('Consultar') }}
                     </a>
                 </div>
 
@@ -190,8 +190,8 @@
         <div class="product-detail__tabs-section">
 
             <div class="product-detail__tabs">
-                <button class="product-detail__tab active" data-tab="specs">Características técnicas</button>
-                <button class="product-detail__tab" data-tab="downloads">Descargas</button>
+                <button class="product-detail__tab active" data-tab="specs">{{ __('Características técnicas') }}</button>
+                <button class="product-detail__tab" data-tab="downloads">{{ __('Descargas') }}</button>
             </div>
 
             <div class="product-detail__tab-content" id="tab-specs">
@@ -247,7 +247,7 @@
         {{-- RELATED --}}
         @if($related->count())
         <div class="product-detail__related">
-            <h2 class="product-detail__related-title">Productos relacionados</h2>
+            <h2 class="product-detail__related-title">{{ __('Productos relacionados') }}</h2>
             <div class="products-grid">
                 @foreach($related as $product)
                 @include('web.products.components.product-card')

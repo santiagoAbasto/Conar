@@ -7,6 +7,7 @@ use App\Models\Industry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Support\Translation;
 
 class AdminIndustryController extends Controller
 {
@@ -18,8 +19,8 @@ class AdminIndustryController extends Controller
                 ->get()
                 ->map(fn($i) => [
                     'id'             => $i->id,
-                    'title'          => $i->title,
-                    'name'           => $i->name,
+                    'title'          => Translation::payload($i->getRawOriginal('title')),
+                    'name'           => Translation::payload($i->getRawOriginal('name')),
                     'slug'           => $i->slug,
                     'image_url'      => $i->image_url,
                     'is_active'      => $i->is_active,
@@ -37,9 +38,9 @@ class AdminIndustryController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'       => 'nullable|string|max:120',
-            'name'        => 'required|string|max:120',
-            'description' => 'nullable|string',
+            'title'       => 'nullable',
+            'name'        => 'required',
+            'description' => 'nullable',
             'order'       => 'nullable|string|max:10',
             'is_active'   => 'boolean',
             'image'       => 'nullable|image|max:4096',
@@ -49,7 +50,10 @@ class AdminIndustryController extends Controller
             $data['image'] = $request->file('image')->store('industries', 'public');
         }
 
-        $data['slug']      = Str::slug($data['name']);
+        foreach (['title', 'name', 'description'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
+        $data['slug']      = Str::slug($data['name']['es']);
         $data['is_active'] = $request->boolean('is_active', true);
         $data['order']     = strtoupper(trim($data['order'] ?? '')) ?: 'A';
 
@@ -64,10 +68,10 @@ class AdminIndustryController extends Controller
         return Inertia::render('Admin/Sectors/Edit', [
             'industry' => [
                 'id'          => $sector->id,
-                'title'       => $sector->title,
-                'name'        => $sector->name,
+                'title'       => Translation::payload($sector->getRawOriginal('title')),
+                'name'        => Translation::payload($sector->getRawOriginal('name')),
                 'slug'        => $sector->slug,
-                'description' => $sector->description,
+                'description' => Translation::payload($sector->getRawOriginal('description')),
                 'image_url'   => $sector->image_url,
                 'is_active'   => $sector->is_active,
                 'order'       => $sector->order,
@@ -78,13 +82,17 @@ class AdminIndustryController extends Controller
     public function update(Request $request, Industry $sector)
     {
         $data = $request->validate([
-            'title'       => 'nullable|string|max:120',
-            'name'        => 'required|string|max:120',
-            'description' => 'nullable|string',
+            'title'       => 'nullable',
+            'name'        => 'required',
+            'description' => 'nullable',
             'order'       => 'nullable|string|max:10',
             'is_active'   => 'boolean',
             'image'       => 'nullable|image|max:4096',
         ]);
+
+        foreach (['title', 'name', 'description'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('industries', 'public');

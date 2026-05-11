@@ -5,7 +5,7 @@
     <div class="container">
 
         <h2 class="productos-destacados__titulo">
-            Productos destacados
+            {{ __('Productos destacados') }}
         </h2>
 
         <div class="productos-destacados__grid">

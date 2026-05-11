@@ -2,6 +2,7 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { t } from "@/Components/Admin/TranslatableField";
 
 export default function ProductsIndex({ products, categories, filters }) {
     const [search, setSearch]   = useState(filters?.search || "");
@@ -49,7 +50,7 @@ export default function ProductsIndex({ products, categories, filters }) {
                 >
                     <option value="">Todas las categorías</option>
                     {categories.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id}>{t(c.name)}</option>
                     ))}
                 </select>
                 <button
@@ -91,7 +92,7 @@ export default function ProductsIndex({ products, categories, filters }) {
                                             <img
                                                 src={p.image_url}
                                                 className="w-9 h-9 rounded-lg object-cover flex-shrink-0"
-                                                alt={p.name}
+                                                alt={t(p.name)}
                                             />
                                         ) : (
                                             <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
@@ -99,8 +100,7 @@ export default function ProductsIndex({ products, categories, filters }) {
                                             </div>
                                         )}
                                         <div className="min-w-0">
-                                            <p className="font-medium text-gray-800 truncate max-w-[180px]">{p.name}</p>
-                                            <p className="text-xs text-gray-400">{p.slug}</p>
+                                            <p className="font-medium text-gray-800 truncate max-w-[180px]">{t(p.name)}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -112,10 +112,10 @@ export default function ProductsIndex({ products, categories, filters }) {
                                             {p.category?.color && (
                                                 <span className="h-3.5 w-3.5 rounded-full border border-white shadow-sm ring-1 ring-gray-200" style={{ backgroundColor: p.category.color }} />
                                             )}
-                                            <span>{p.category?.name || "—"}</span>
+                                            <span>{t(p.category?.name, "—")}</span>
                                         </span>
                                         {p.subcategory && (
-                                            <p className="text-xs text-gray-400">{p.subcategory.name}</p>
+                                            <p className="text-xs text-gray-400">{t(p.subcategory.name)}</p>
                                         )}
                                     </div>
                                 </td>

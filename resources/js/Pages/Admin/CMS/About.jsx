@@ -4,15 +4,16 @@ import { Icon } from "@iconify/react";
 import { useState } from "react";
 import RichTextEditor from "@/Components/Admin/RichTextEditor";
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField, { asTranslations, t } from "@/Components/Admin/TranslatableField";
 
 function SectionCard({ section, pageId, onDelete }) {
     const [editing, setEditing] = useState(false);
     const { data, setData, post, processing } = useForm({
         _method: "PUT",
-        title: section.title || "",
-        subtitle: section.subtitle || "",
-        content: section.content || "",
-        button_text: section.button_text || "",
+        title: asTranslations(section.title || ""),
+        subtitle: asTranslations(section.subtitle || ""),
+        content: asTranslations(section.content || ""),
+        button_text: asTranslations(section.button_text || ""),
         button_link: section.button_link || "",
         order: section.order || 0,
         is_active: section.is_active ?? true,
@@ -33,8 +34,8 @@ function SectionCard({ section, pageId, onDelete }) {
                             <span className="text-xs bg-[#25A7CA]/10 text-[#25A7CA] px-2 py-0.5 rounded-full font-medium">{section.type}</span>
                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${section.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{section.is_active ? 'Activo' : 'Inactivo'}</span>
                         </div>
-                        <p className="font-semibold text-gray-800 truncate">{section.title || '(Sin título)'}</p>
-                        <p className="text-sm text-gray-500 truncate mt-0.5">{section.subtitle || '—'}</p>
+                        <p className="font-semibold text-gray-800 truncate">{t(section.title, '(Sin título)')}</p>
+                        <p className="text-sm text-gray-500 truncate mt-0.5">{t(section.subtitle, '—')}</p>
                     </div>
                     <div className="flex gap-2 ml-4">
                         <button onClick={() => setEditing(true)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"><Icon icon="solar:pen-outline" width={16} /></button>
@@ -49,23 +50,16 @@ function SectionCard({ section, pageId, onDelete }) {
         <div className="bg-white rounded-xl border border-[#25A7CA]/30 shadow-sm p-5">
             <form onSubmit={save} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1">Título</label>
-                        <input type="text" value={data.title} onChange={(e) => setData("title", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                    </div>
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1">Subtítulo</label>
-                        <input type="text" value={data.subtitle} onChange={(e) => setData("subtitle", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                    </div>
+                    <TranslatableField label="Título" value={data.title} onChange={(v) => setData("title", v)} />
+                    <TranslatableField label="Subtítulo" value={data.subtitle} onChange={(v) => setData("subtitle", v)} />
                 </div>
                 <div>
                     <label className="block text-xs text-gray-500 mb-1">Contenido</label>
-                    <RichTextEditor value={data.content} onChange={(v) => setData("content", v)} />
+                    <TranslatableField label="Contenido" value={data.content} onChange={(v) => setData("content", v)} type="rich" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-xs text-gray-500 mb-1">Texto botón</label>
-                        <input type="text" value={data.button_text} onChange={(e) => setData("button_text", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none" />
+                        <TranslatableField label="Texto botón" value={data.button_text} onChange={(v) => setData("button_text", v)} />
                     </div>
                     <div>
                         <label className="block text-xs text-gray-500 mb-1">URL botón</label>
@@ -107,8 +101,8 @@ export default function About({ page, sections }) {
         <AdminLayout>
             <div className="max-w-3xl">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">CMS – Nosotros</h1>
-                    <p className="text-sm text-gray-500">Gestión del contenido de la página "Nosotros"</p>
+                    <h1 className="text-2xl font-bold text-gray-800">Nosotros</h1>
+                    <p className="text-sm text-gray-500">Editá los textos que aparecen en la página "Nosotros".</p>
                 </div>
 
                 <div className="space-y-4">

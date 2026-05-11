@@ -1,12 +1,13 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
+import TranslatableField from "@/Components/Admin/TranslatableField";
 
 export default function DownloadsCreate() {
     const { data, setData, post, processing, errors } = useForm({
-        name: "",
-        category: "",
-        description: "",
+        name: { es: "", pt: "", en: "" },
+        category: { es: "", pt: "", en: "" },
+        description: { es: "", pt: "", en: "" },
         order: 0,
         is_active: true,
         file: null,
@@ -27,19 +28,9 @@ export default function DownloadsCreate() {
 
                 <form onSubmit={submit} className="space-y-6">
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                            <input type="text" value={data.name} onChange={(e) => setData("name", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Categoría</label>
-                            <input type="text" value={data.category} onChange={(e) => setData("category", e.target.value)} placeholder="Ej: Catálogos, Fichas técnicas..." className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Descripción</label>
-                            <textarea value={data.description} onChange={(e) => setData("description", e.target.value)} rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30 resize-none" />
-                        </div>
+                        <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
+                        <TranslatableField label="Categoría" value={data.category} onChange={(v) => setData("category", v)} placeholder="Ej: Catálogos, Fichas técnicas..." error={errors.category} />
+                        <TranslatableField label="Descripción" value={data.description} onChange={(v) => setData("description", v)} type="textarea" rows={2} error={errors.description} />
                         <div>
                             <label className="block text-sm text-gray-600 mb-1">Archivo *</label>
                             <input type="file" onChange={(e) => setData("file", e.target.files[0])} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#25A7CA]/10 file:text-[#25A7CA] hover:file:bg-[#25A7CA]/20" />

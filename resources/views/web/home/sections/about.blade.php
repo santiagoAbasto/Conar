@@ -3,6 +3,10 @@ $about = $page->sections
     ->where('type','about')
     ->where('is_active',true)
     ->first();
+
+$aboutTitle = $about?->getTitle() ?? '';
+$aboutContent = $about?->getContent() ?? '';
+$aboutButton = $about?->getButtonText() ?? '';
 @endphp
 
 @if($about)
@@ -13,7 +17,7 @@ $about = $page->sections
     <div class="about-section__img-wrap">
         <img
             src="{{ asset('storage/' . $about->image) }}"
-            alt="{{ $about->title['es'] ?? 'Sobre nosotros' }}"
+            alt="{{ $aboutTitle ?: __('Nosotros') }}"
             class="about-section__img">
     </div>
 
@@ -22,16 +26,16 @@ $about = $page->sections
         <div class="about-section__content">
 
             <h2 class="about-section__title">
-                {{ $about->title['es'] ?? '' }}
+                {{ $aboutTitle }}
             </h2>
 
-            @foreach(array_filter(array_map('trim', explode("\n", $about->content['es'] ?? ''))) as $paragraph)
+            @foreach(array_filter(array_map('trim', explode("\n", $aboutContent))) as $paragraph)
             <p class="about-section__text">{{ $paragraph }}</p>
             @endforeach
 
-            @if($about->button_text)
+            @if($aboutButton)
             <a href="{{ $about->button_link ?? '#' }}" class="about-section__btn">
-                {{ $about->button_text['es'] ?? '' }}
+                {{ $aboutButton }}
             </a>
             @endif
 

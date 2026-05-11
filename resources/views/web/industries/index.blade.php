@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@section('title', 'Industrias')
+@section('title', __('Industrias'))
 
 @section('content')
 
@@ -9,9 +9,9 @@
 <div class="container">
 
 <div class="breadcrumb">
-    <a href="{{ route('home') }}">Inicio</a>
+    <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
     <span>›</span>
-    <span>Industrias</span>
+    <span>{{ __('Industrias') }}</span>
 </div>
 
 <div class="industries-grid">

@@ -2,14 +2,14 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
 
-import RichTextEditor from "@/Components/Admin/RichTextEditor";
 import ImageUploadField from "@/Components/Admin/ImageUploadField";
+import TranslatableField from "@/Components/Admin/TranslatableField";
 
 export default function SectorsCreate() {
     const { data, setData, post, processing, errors } = useForm({
-        title: "",
-        name: "",
-        description: "",
+        title: { es: "", pt: "", en: "" },
+        name: { es: "", pt: "", en: "" },
+        description: { es: "", pt: "", en: "" },
         order: "A",
         is_active: true,
         image: null,
@@ -29,19 +29,9 @@ export default function SectorsCreate() {
                 </div>
                 <form onSubmit={submit} className="space-y-6">
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Nombre *</label>
-                            <input type="text" value={data.name} onChange={(e) => setData("name", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">Título (etiqueta)</label>
-                            <input type="text" value={data.title} onChange={(e) => setData("title", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#25A7CA]/30" />
-                        </div>
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-2">Descripción</label>
-                            <RichTextEditor value={data.description} onChange={(v) => setData("description", v)} placeholder="Descripción del sector..." />
-                        </div>
+                        <TranslatableField label="Nombre" value={data.name} onChange={(v) => setData("name", v)} required error={errors.name} />
+                        <TranslatableField label="Título (etiqueta)" value={data.title} onChange={(v) => setData("title", v)} error={errors.title} />
+                        <TranslatableField label="Descripción" value={data.description} onChange={(v) => setData("description", v)} type="rich" placeholder="Descripción del sector..." error={errors.description} />
                     </div>
 
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">

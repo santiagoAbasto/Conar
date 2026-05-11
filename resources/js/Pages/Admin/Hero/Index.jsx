@@ -1,6 +1,7 @@
 import AdminLayout from "@/Layouts/AdminLayout";
 import { router } from "@inertiajs/react";
 import { Icon } from "@iconify/react";
+import { t } from "@/Components/Admin/TranslatableField";
 
 export default function HeroIndex({ slides }) {
     const destroy = (id) => {
@@ -36,7 +37,7 @@ export default function HeroIndex({ slides }) {
                         {/* Thumbnail */}
                         <div className="relative h-40 bg-gray-100">
                             {slide.media_type === 'image' && slide.media_url ? (
-                                <img src={slide.media_url} alt={slide.title} className="w-full h-full object-cover" />
+                                <img src={slide.media_url} alt={t(slide.title)} className="w-full h-full object-cover" />
                             ) : slide.media_type === 'video' ? (
                                 <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white">
                                     <Icon icon="solar:play-circle-outline" width={40} />
@@ -56,8 +57,8 @@ export default function HeroIndex({ slides }) {
                             </div>
                         </div>
                         <div className="p-4">
-                            <p className="font-semibold text-gray-800 truncate">{slide.title || '(Sin título)'}</p>
-                            <p className="text-xs text-gray-500 mt-0.5 truncate">{slide.subtitle || '—'}</p>
+                            <p className="font-semibold text-gray-800 truncate">{t(slide.title, '(Sin título)')}</p>
+                            <p className="text-xs text-gray-500 mt-0.5 truncate">{t(slide.subtitle, '—')}</p>
                             <div className="flex items-center gap-1 mt-4">
                                 <span className={`text-xs px-2 py-0.5 rounded-full ${slide.media_type === 'video' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                                     {slide.media_type === 'video' ? 'Video' : 'Imagen'}

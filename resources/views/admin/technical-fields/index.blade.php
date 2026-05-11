@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Campos Técnicos')
+@section('title', 'Campos del formulario')
 
 @section('content')
 
 <div class="admin-page-header">
-    <h1 class="admin-page-title">Campos Técnicos por Subcategoría</h1>
+    <h1 class="admin-page-title">Campos del formulario por subcategoría</h1>
     <a href="{{ route('admin.technical-fields.create') }}" class="btn btn--primary">
         + Nuevo campo
     </a>
@@ -14,7 +14,7 @@
 <div class="admin-card">
     @if($fields->isEmpty())
         <div style="padding: 40px 24px; text-align: center; color: #888; font-size: 14px;">
-            No hay campos técnicos definidos aún.
+            No hay campos definidos aún.
             <a href="{{ route('admin.technical-fields.create') }}">Crear el primero</a>.
         </div>
     @else
@@ -22,8 +22,8 @@
             <thead>
                 <tr>
                     <th>Subcategoría</th>
-                    <th>Label</th>
-                    <th>Name (clave)</th>
+                    <th>Etiqueta</th>
+                    <th>Identificador</th>
                     <th>Tipo</th>
                     <th>Orden</th>
                     <th></th>

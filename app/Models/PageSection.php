@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Translation;
 
 class PageSection extends Model
 {
@@ -52,17 +53,17 @@ class PageSection extends Model
 
     public function getTitle()
     {
-        return $this->title['es'] ?? null;
+        return Translation::text($this->title);
     }
 
     public function getSubtitle()
     {
-        return $this->subtitle['es'] ?? null;
+        return Translation::text($this->subtitle);
     }
 
     public function getContent()
     {
-        return $this->content['es'] ?? null;
+        return Translation::text($this->content);
     }
 
     public function getContentParagraphs()
@@ -78,6 +79,6 @@ class PageSection extends Model
 
     public function getButtonText()
     {
-        return $this->button_text['es'] ?? null;
+        return Translation::text($this->button_text);
     }
 }

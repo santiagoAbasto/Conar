@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\PageSection;
 use App\Models\Setting;
+use App\Support\Translation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -65,14 +66,20 @@ class AdminCmsController extends Controller
         $page = $this->getPage('contacto');
 
         $footer = json_decode(Setting::where('key', 'footer')->value('value') ?? '{}', true);
+        $contactPage = json_decode(Setting::where('key', 'contact_page')->value('value') ?? '{}', true);
+        $footer = is_array($footer) ? $footer : [];
+        $contactPage = is_array($contactPage) ? $contactPage : [];
 
         return Inertia::render('Admin/CMS/Contacto', [
             'page'     => $page,
             'sections' => $page->sections->map(fn($s) => $this->mapSection($s)),
             'contactInfo' => [
-                'address' => $footer['address'] ?? '',
-                'email'   => $footer['email'] ?? '',
-                'phone'   => $footer['phone'] ?? '',
+                'address' => Translation::payload($contactPage['address'] ?? ($footer['address'] ?? '')),
+                'email'   => $contactPage['email'] ?? ($footer['email'] ?? ''),
+                'phone'   => $contactPage['phone'] ?? ($footer['phone'] ?? ''),
+                'fixed_phone' => $contactPage['fixed_phone'] ?? ($footer['fixed_phone'] ?? ''),
+                'mail_recipients' => $contactPage['mail_recipients'] ?? ($footer['mail_recipients'] ?? 'admin@conar.com,soporte@conar.com.ar,dda@conar.com.ar'),
+                'contact_items' => $this->contactItemsForForm($contactPage['contact_items'] ?? ($footer['contact_items'] ?? [])),
             ],
         ]);
     }
@@ -80,24 +87,137 @@ class AdminCmsController extends Controller
     public function updateContactInfo(Request $request)
     {
         $data = $request->validate([
-            'address' => 'nullable|string|max:500',
+            'address' => 'nullable',
             'email'   => 'nullable|string|max:200',
             'phone'   => 'nullable|string|max:100',
+            'fixed_phone' => 'nullable|string|max:100',
+            'mail_recipients' => 'nullable|string|max:500',
+            'contact_items' => 'nullable|array',
+            'contact_items.*.type' => 'required_with:contact_items|string|in:email,phone,whatsapp',
+            'contact_items.*.label' => 'nullable',
+            'contact_items.*.value' => 'nullable|string|max:200',
+            'contact_items.*.is_active' => 'boolean',
+        ]);
+
+        $contactPage = [];
+
+        $contactPage['address'] = Translation::input($request->input('address'));
+        $contactPage['email']   = $data['email'] ?? '';
+        $contactPage['phone']   = $data['phone'] ?? '';
+        $contactPage['fixed_phone'] = $data['fixed_phone'] ?? '';
+        $contactPage['mail_recipients'] = $data['mail_recipients'] ?? 'admin@conar.com,soporte@conar.com.ar,dda@conar.com.ar';
+        $contactPage['contact_items'] = $this->sanitizeContactItems($request->input('contact_items', []), $contactPage);
+
+        Setting::updateOrCreate(
+            ['key' => 'contact_page'],
+            ['value' => json_encode($contactPage, JSON_UNESCAPED_UNICODE)]
+        );
+
+        return back()->with('success', 'Datos de la página de contacto actualizados.');
+    }
+
+    public function footer()
+    {
+        $footer = json_decode(Setting::where('key', 'footer')->value('value') ?? '{}', true);
+        $footer = is_array($footer) ? $footer : [];
+
+        return Inertia::render('Admin/Extras/Footer', [
+            'contactInfo' => [
+                'address' => Translation::payload($footer['address'] ?? ''),
+                'email'   => $footer['email'] ?? '',
+                'phone'   => $footer['phone'] ?? '',
+                'fixed_phone' => $footer['fixed_phone'] ?? '',
+                'mail_recipients' => $footer['mail_recipients'] ?? 'admin@conar.com,soporte@conar.com.ar,dda@conar.com.ar',
+                'contact_items' => $this->contactItemsForForm($footer['contact_items'] ?? []),
+            ],
+        ]);
+    }
+
+    public function updateFooter(Request $request)
+    {
+        $data = $request->validate([
+            'address' => 'nullable',
+            'email'   => 'nullable|string|max:200',
+            'phone'   => 'nullable|string|max:100',
+            'fixed_phone' => 'nullable|string|max:100',
+            'mail_recipients' => 'nullable|string|max:500',
+            'contact_items' => 'nullable|array',
+            'contact_items.*.type' => 'required_with:contact_items|string|in:email,phone,whatsapp',
+            'contact_items.*.label' => 'nullable',
+            'contact_items.*.value' => 'nullable|string|max:200',
+            'contact_items.*.is_active' => 'boolean',
         ]);
 
         $setting = Setting::where('key', 'footer')->first();
         $footer = $setting ? json_decode($setting->value, true) : [];
+        $footer = is_array($footer) ? $footer : [];
 
-        $footer['address'] = $data['address'] ?? '';
+        $footer['address'] = Translation::input($request->input('address'));
         $footer['email']   = $data['email'] ?? '';
         $footer['phone']   = $data['phone'] ?? '';
+        $footer['fixed_phone'] = $data['fixed_phone'] ?? '';
+        $footer['mail_recipients'] = $data['mail_recipients'] ?? 'admin@conar.com,soporte@conar.com.ar,dda@conar.com.ar';
+        $footer['contact_items'] = $this->sanitizeContactItems($request->input('contact_items', []), $footer);
 
         Setting::updateOrCreate(
             ['key' => 'footer'],
-            ['value' => json_encode($footer)]
+            ['value' => json_encode($footer, JSON_UNESCAPED_UNICODE)]
         );
 
-        return back()->with('success', 'Datos de contacto actualizados.');
+        return back()->with('success', 'Datos del footer actualizados.');
+    }
+
+    private function contactItemsForForm(array $items): array
+    {
+        return collect($items)
+            ->filter(fn ($item) => is_array($item))
+            ->map(fn ($item) => [
+                'type' => $item['type'] ?? 'email',
+                'label' => Translation::text($item['label'] ?? '') ?? '',
+                'value' => trim((string) ($item['value'] ?? '')),
+                'is_active' => filter_var($item['is_active'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function sanitizeContactItems(array $items, array $fallback = []): array
+    {
+        $sanitized = collect($items)
+            ->map(fn ($item) => [
+                'type' => $item['type'] ?? 'email',
+                'label' => trim((string) (Translation::text($item['label'] ?? '') ?? '')),
+                'value' => trim((string) ($item['value'] ?? '')),
+                'is_active' => filter_var($item['is_active'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            ])
+            ->filter(fn ($item) => $item['value'] !== '')
+            ->values()
+            ->all();
+
+        if ($sanitized) {
+            return $sanitized;
+        }
+
+        return array_values(array_filter([
+            !empty($fallback['email']) ? [
+                'type' => 'email',
+                'label' => 'Email',
+                'value' => trim((string) $fallback['email']),
+                'is_active' => true,
+            ] : null,
+            !empty($fallback['phone']) ? [
+                'type' => 'whatsapp',
+                'label' => 'WhatsApp',
+                'value' => trim((string) $fallback['phone']),
+                'is_active' => true,
+            ] : null,
+            !empty($fallback['fixed_phone']) ? [
+                'type' => 'phone',
+                'label' => 'Teléfono fijo',
+                'value' => trim((string) $fallback['fixed_phone']),
+                'is_active' => true,
+            ] : null,
+        ]));
     }
 
     /* ---------------------------------------- SECTIONS CRUD ---------------------------------------- */
@@ -106,10 +226,10 @@ class AdminCmsController extends Controller
     {
         $data = $request->validate([
             'type'        => 'required|string|max:80',
-            'title'       => 'nullable|string|max:300',
-            'subtitle'    => 'nullable|string|max:500',
-            'content'     => 'nullable|string',
-            'button_text' => 'nullable|string|max:100',
+            'title'       => 'nullable',
+            'subtitle'    => 'nullable',
+            'content'     => 'nullable',
+            'button_text' => 'nullable',
             'button_link' => 'nullable|string|max:500',
             'order'       => 'nullable|integer|min:0',
             'is_active'   => 'boolean',
@@ -120,10 +240,9 @@ class AdminCmsController extends Controller
             $data['image'] = $request->file('image')->store('cms', 'public');
         }
 
-        $data['title']      = isset($data['title']) ? ['es' => $data['title']] : null;
-        $data['subtitle']   = isset($data['subtitle']) ? ['es' => $data['subtitle']] : null;
-        $data['content']    = isset($data['content']) ? ['es' => $data['content']] : null;
-        $data['button_text']= isset($data['button_text']) ? ['es' => $data['button_text']] : null;
+        foreach (['title', 'subtitle', 'content', 'button_text'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
         $data['is_active']  = $request->boolean('is_active', true);
 
         $page->sections()->create($data);
@@ -134,10 +253,10 @@ class AdminCmsController extends Controller
     public function updateSection(Request $request, PageSection $section)
     {
         $data = $request->validate([
-            'title'       => 'nullable|string|max:300',
-            'subtitle'    => 'nullable|string|max:500',
-            'content'     => 'nullable|string',
-            'button_text' => 'nullable|string|max:100',
+            'title'       => 'nullable',
+            'subtitle'    => 'nullable',
+            'content'     => 'nullable',
+            'button_text' => 'nullable',
             'button_link' => 'nullable|string|max:500',
             'order'       => 'nullable|integer|min:0',
             'is_active'   => 'boolean',
@@ -150,10 +269,9 @@ class AdminCmsController extends Controller
             unset($data['image']);
         }
 
-        $data['title']      = isset($data['title']) ? ['es' => $data['title']] : null;
-        $data['subtitle']   = isset($data['subtitle']) ? ['es' => $data['subtitle']] : null;
-        $data['content']    = isset($data['content']) ? ['es' => $data['content']] : null;
-        $data['button_text']= isset($data['button_text']) ? ['es' => $data['button_text']] : null;
+        foreach (['title', 'subtitle', 'content', 'button_text'] as $field) {
+            $data[$field] = Translation::input($request->input($field));
+        }
         $data['is_active']  = $request->boolean('is_active', true);
 
         $section->update($data);
@@ -174,10 +292,10 @@ class AdminCmsController extends Controller
         return [
             'id'          => $s->id,
             'type'        => $s->type,
-            'title'       => is_array($s->title) ? ($s->title['es'] ?? '') : $s->title,
-            'subtitle'    => is_array($s->subtitle) ? ($s->subtitle['es'] ?? '') : $s->subtitle,
-            'content'     => is_array($s->content) ? ($s->content['es'] ?? '') : $s->content,
-            'button_text' => is_array($s->button_text) ? ($s->button_text['es'] ?? '') : $s->button_text,
+            'title'       => Translation::payload($s->getRawOriginal('title')),
+            'subtitle'    => Translation::payload($s->getRawOriginal('subtitle')),
+            'content'     => Translation::payload($s->getRawOriginal('content')),
+            'button_text' => Translation::payload($s->getRawOriginal('button_text')),
             'button_link' => $s->button_link,
             'image_url'   => $s->image ? asset('storage/' . $s->image) : null,
             'is_active'   => $s->is_active,

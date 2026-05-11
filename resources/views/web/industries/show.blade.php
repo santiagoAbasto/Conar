@@ -9,9 +9,9 @@
 <div class="container">
 
 <div class="breadcrumb">
-    <a href="{{ route('home') }}">Inicio</a>
+    <a href="{{ route('home') }}">{{ __('Inicio') }}</a>
     <span>›</span>
-    <a href="{{ route('industries.index') }}">Industrias</a>
+    <a href="{{ route('industries.index') }}">{{ __('Industrias') }}</a>
     <span>›</span>
     <span>{{ $industry->name }}</span>
 </div>

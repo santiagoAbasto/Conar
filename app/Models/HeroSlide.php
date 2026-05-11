@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Translation;
 
 class HeroSlide extends Model
 {
@@ -47,22 +48,22 @@ class HeroSlide extends Model
 
     public function setTitleAttribute($value)
     {
-        $this->attributes['title'] = $this->cleanText($value);
+        $this->attributes['title'] = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $this->cleanText($value);
     }
 
     public function setSubtitleAttribute($value)
     {
-        $this->attributes['subtitle'] = $this->cleanText($value);
+        $this->attributes['subtitle'] = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $this->cleanText($value);
     }
 
     public function setContentAttribute($value)
     {
-        $this->attributes['content'] = $this->cleanText($value);
+        $this->attributes['content'] = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $this->cleanText($value);
     }
 
     public function setButtonTextAttribute($value)
     {
-        $this->attributes['button_text'] = $this->cleanText($value);
+        $this->attributes['button_text'] = is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $this->cleanText($value);
     }
 
     /*
@@ -75,5 +76,25 @@ class HeroSlide extends Model
     {
         if (!$this->media) return null;
         return asset('storage/' . $this->media);
+    }
+
+    public function getTitleAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getSubtitleAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getContentAttribute($value): ?string
+    {
+        return Translation::text($value);
+    }
+
+    public function getButtonTextAttribute($value): ?string
+    {
+        return Translation::text($value);
     }
 }

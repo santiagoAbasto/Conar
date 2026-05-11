@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductDownload;
 use Illuminate\Http\Request;
+use App\Support\Translation;
 
 class ProductDownloadController extends Controller
 {
     public function store(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required',
             'file' => 'required|file|max:20480',
             'type' => 'nullable|string|max:50',
         ]);
@@ -31,7 +32,7 @@ class ProductDownloadController extends Controller
 
         ProductDownload::create([
             'product_id'   => $product->id,
-            'name'         => trim($request->name),
+            'name'         => Translation::input($request->input('name')),
             'file'         => $path,
             'type'         => $request->input('type') ?: strtoupper($file->getClientOriginalExtension()),
             'size'         => $size,

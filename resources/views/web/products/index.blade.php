@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@section('title','Productos')
+@section('title', __('Productos'))
 
 @section('content')
 
@@ -9,9 +9,9 @@
 <div class="container">
 
 <div class="breadcrumb">
-<a href="{{ route('home') }}">Inicio</a>
+<a href="{{ route('home') }}">{{ __('Inicio') }}</a>
 <span>›</span>
-<span>Instrumental</span>
+<span>{{ __('Instrumental') }}</span>
 </div>
 
 
@@ -22,7 +22,7 @@
 
 <aside class="products-sidebar">
 
-<h3>Categorías</h3>
+<h3>{{ __('Categorías') }}</h3>
 
 <ul>
 
@@ -47,7 +47,7 @@
 
 <div class="products-empty">
 
-Seleccione una categoría para ver los productos.
+{{ __('Seleccione una categoría para ver los productos.') }}
 
 </div>
 

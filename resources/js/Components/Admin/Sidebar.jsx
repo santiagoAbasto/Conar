@@ -98,6 +98,7 @@ export default function Sidebar() {
             icon: "solar:widget-add-outline",
             children: [
                 { title: "Metadatos SEO", icon: "solar:tag-outline",              url: "/admin/seo" },
+                { title: "Footer", icon: "solar:window-frame-outline", url: "/admin/extras/footer" },
                 { title: "Whatsapp Flotante", icon: "solar:phone-calling-rounded-outline", url: "/admin/extras/whatsapp" },
                 { title: "Usuarios Admin", icon: "solar:users-group-two-rounded-outline", url: "/admin/users" },
             ],
