@@ -95,15 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
-                    const successMsg = data?.message || "¡Te suscribiste correctamente!";
+                    const successMsg = (data && data.message) || "¡Te suscribiste correctamente!";
                     input.value     = "";
                     msg.textContent = successMsg;
                     showWebToast(successMsg, "success");
                 } else {
-                    const errores  = data?.errors?.email;
+                    const errores  = data && data.errors && data.errors.email;
                     const errorMsg = errores
                         ? errores[0]
-                        : (data?.message || "Ocurrió un error. Intentá de nuevo.");
+                        : ((data && data.message) || "Ocurrió un error. Intentá de nuevo.");
                     msg.textContent = errorMsg;
                     showWebToast(errorMsg, "error");
                 }
@@ -119,6 +119,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const flash = window.__webFlashToast;
+
+    if (flash && flash.message) {
+        showWebToast(flash.message, flash.type || "success");
+        window.__webFlashToast = null;
+    }
 });
 
 

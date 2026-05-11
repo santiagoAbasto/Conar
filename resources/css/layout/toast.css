@@ -5,7 +5,7 @@
 
 .web-toast {
     position: fixed;
-    bottom: 28px;
+    bottom: max(28px, calc(env(safe-area-inset-bottom) + 20px));
     right: 24px;
     z-index: 10000;
     display: flex;
@@ -96,7 +96,7 @@
 /* ── Mobile: ocupa todo el ancho ── */
 @media (max-width: 640px) {
     .web-toast {
-        bottom: 20px;
+        bottom: max(20px, calc(env(safe-area-inset-bottom) + 16px));
         left: 16px;
         right: 16px;
         max-width: 100%;

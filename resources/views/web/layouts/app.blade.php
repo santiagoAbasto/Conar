@@ -111,24 +111,11 @@ $_metaDesc  = $_pageDesc
 
 {{-- TOAST NOTIFICATION --}}
 @if(session('success') || session('error'))
-<div id="web-toast" class="web-toast {{ session('error') ? 'web-toast--error' : 'web-toast--success' }}">
-    <div class="web-toast__icon">
-        @if(session('error'))
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-        @else
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        @endif
-    </div>
-    <span class="web-toast__msg">{{ session('success') ?? session('error') }}</span>
-    <button class="web-toast__close" onclick="document.getElementById('web-toast').remove()" aria-label="Cerrar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-</div>
 <script>
-    setTimeout(function(){
-        var t = document.getElementById('web-toast');
-        if (t) { t.classList.add('web-toast--hide'); setTimeout(function(){ if(t) t.remove(); }, 400); }
-    }, 4500);
+    window.__webFlashToast = {
+        message: @json(session('success') ?? session('error')),
+        type: @json(session('error') ? 'error' : 'success')
+    };
 </script>
 @endif
 
