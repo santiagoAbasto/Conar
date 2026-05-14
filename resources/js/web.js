@@ -240,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const navLinks  = document.getElementById("navLinks");
     const navClose  = document.getElementById("navClose");
     const overlay   = document.getElementById("navOverlay");
+    const mobileLanguageSwitcher = document.querySelector(".nav-utilities .language-switcher");
 
     function openMenu() {
         navLinks.classList.add("open");
@@ -253,6 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.remove("active");
         hamburger.setAttribute("aria-expanded", "false");
         document.body.style.overflow = "";
+        mobileLanguageSwitcher?.removeAttribute("open");
     }
 
     if (hamburger) {

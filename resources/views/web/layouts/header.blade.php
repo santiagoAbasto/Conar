@@ -19,13 +19,6 @@
             </a>
         </div>
 
-        <!-- HAMBURGER (solo visible en mobile) -->
-        <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false">
-            <span class="hamburger__line"></span>
-            <span class="hamburger__line"></span>
-            <span class="hamburger__line"></span>
-        </button>
-
         <!-- OVERLAY (fondo oscuro en mobile) -->
         <div class="nav-overlay" id="navOverlay"></div>
 
@@ -33,6 +26,10 @@
         <nav class="nav-links" id="navLinks">
 
             <button class="nav-close" id="navClose" aria-label="Cerrar menú">✕</button>
+
+            <a href="{{ route('home') }}" class="mobile-drawer-logo" aria-label="CONAR">
+                <img src="{{ asset('storage/images/logos/logo.png') }}" alt="CONAR">
+            </a>
 
             <a href="{{ route('nosotros') }}"
                class="{{ request()->routeIs('nosotros') ? 'active' : '' }}">{{ __('Nosotros') }}</a>
@@ -62,28 +59,37 @@
 
         </nav>
 
-        <details class="language-switcher" aria-label="{{ __('Cambiar idioma') }}">
-            <summary class="language-switcher__trigger">
-                <span class="language-switcher__badge">{{ $languages[$currentLocale]['short'] ?? 'ES' }}</span>
-                <span class="language-switcher__current">{{ $languages[$currentLocale]['label'] ?? 'Español' }}</span>
-                <span class="language-switcher__chevron" aria-hidden="true"></span>
-            </summary>
+        <div class="nav-utilities">
+            <details class="language-switcher" aria-label="{{ __('Cambiar idioma') }}">
+                <summary class="language-switcher__trigger">
+                    <span class="language-switcher__badge">{{ $languages[$currentLocale]['short'] ?? 'ES' }}</span>
+                    <span class="language-switcher__current">{{ $languages[$currentLocale]['label'] ?? 'Español' }}</span>
+                    <span class="language-switcher__chevron" aria-hidden="true"></span>
+                </summary>
 
-            <div class="language-switcher__menu">
-                @foreach ($languages as $locale => $language)
-                    <form method="POST" action="{{ route('language.switch', $locale) }}">
-                        @csrf
-                        <button
-                            type="submit"
-                            class="language-switcher__option{{ $currentLocale === $locale ? ' is-active' : '' }}"
-                        >
-                            <span>{{ $language['short'] }}</span>
-                            <strong>{{ $language['label'] }}</strong>
-                        </button>
-                    </form>
-                @endforeach
-            </div>
-        </details>
+                <div class="language-switcher__menu">
+                    @foreach ($languages as $locale => $language)
+                        <form method="POST" action="{{ route('language.switch', $locale) }}">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="language-switcher__option{{ $currentLocale === $locale ? ' is-active' : '' }}"
+                            >
+                                <span>{{ $language['short'] }}</span>
+                                <strong>{{ $language['label'] }}</strong>
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+            </details>
+
+            <!-- HAMBURGER (solo visible en mobile) -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false">
+                <span class="hamburger__line"></span>
+                <span class="hamburger__line"></span>
+                <span class="hamburger__line"></span>
+            </button>
+        </div>
 
         <!-- BOTÓN PRESUPUESTO (desktop only) -->
         <a href="{{ route('presupuesto') }}" class="btn-presupuesto btn-presupuesto--desktop">

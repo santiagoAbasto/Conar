@@ -158,8 +158,14 @@ body {
         height: 50px;
     }
 
+    .nav-utilities {
+        margin-left: auto;
+        gap: 10px;
+    }
+
     .hamburger {
         display: flex;
+        margin-left: 0;
     }
 
     .btn-presupuesto--desktop {
@@ -177,10 +183,11 @@ body {
         background: #fff;
         flex-direction: column;
         align-items: flex-start;
-        padding: 24px;
+        padding: 30px 24px 24px;
         margin-left: 0;
         gap: 0;
         z-index: 200;
+        box-sizing: border-box;
         box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
         transition: right 0.3s ease;
         overflow-y: auto;
@@ -192,6 +199,28 @@ body {
 
     .nav-close {
         display: block;
+        position: absolute;
+        top: 10px;
+        right: 16px;
+        margin-bottom: 0;
+        line-height: 1;
+        z-index: 1;
+    }
+
+    .mobile-drawer-logo {
+        display: block;
+        width: 100%;
+        padding: 0 56px 10px 0 !important;
+        border-bottom: 1px solid #f0f0f0;
+        box-sizing: border-box;
+        line-height: 0;
+    }
+
+    .mobile-drawer-logo img {
+        display: block;
+        width: auto;
+        height: 40px;
+        max-width: 100%;
     }
 
     .nav-links a {
@@ -517,6 +546,28 @@ body {
     .hero-dot {
         width: 24px;
         height: 4px;
+    }
+
+    .language-switcher__trigger {
+        gap: 6px;
+        min-height: 34px;
+        padding: 6px 9px;
+        box-shadow: 0 6px 16px rgba(16, 16, 16, 0.08);
+    }
+
+    .language-switcher__badge {
+        width: 24px;
+        height: 20px;
+        font-size: 10px;
+    }
+
+    .language-switcher__current {
+        display: none;
+    }
+
+    .language-switcher__chevron {
+        width: 7px;
+        height: 7px;
     }
 
     /* ── Productos destacados (home) ── */
@@ -1098,4 +1149,41 @@ body {
     .nav-links.open a:nth-of-type(5) { animation-delay: 0.25s; }
     .nav-links.open a:nth-of-type(6) { animation-delay: 0.30s; }
     .nav-links.open a:nth-of-type(7) { animation-delay: 0.35s; }
+}
+
+@media (max-width: 380px) {
+
+    .container,
+    .nav-container,
+    .footer__container,
+    .footer__bottom-inner {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .logo img {
+        height: 40px;
+    }
+
+    .nav-utilities {
+        gap: 8px;
+    }
+
+    .language-switcher__trigger {
+        padding: 5px 8px;
+    }
+
+    .language-switcher__badge {
+        width: 22px;
+        height: 18px;
+        font-size: 9px;
+    }
+
+    .hamburger {
+        padding: 6px;
+    }
+
+    .hamburger__line {
+        width: 22px;
+    }
 }

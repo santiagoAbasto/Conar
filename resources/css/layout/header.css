@@ -51,6 +51,14 @@
     width: auto;
 }
 
+.nav-utilities {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 14px;
+    flex-shrink: 0;
+}
+
 
 /* ---- NAV + SEARCH ---- */
 
@@ -60,6 +68,10 @@
     gap: 16px;                  /* entre todos los items, incl. SVG buscar */
     margin-left: auto;          /* empuja nav+SVG+botón hacia la derecha */
     flex-shrink: 0;
+}
+
+.mobile-drawer-logo {
+    display: none;
 }
 
 /* Links de texto */
@@ -156,7 +168,6 @@
 
 .language-switcher {
     position: relative;
-    margin-left: 14px;
     flex-shrink: 0;
     font-family: Montserrat, sans-serif;
 }
