@@ -15,19 +15,19 @@
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 📑 Contenido
+## <img src="docs/readme/ic-indice.svg" width="24" height="24" alt=""> Contenido
 
 [El problema](#-el-problema) · [La solución](#-la-solución) · [Funcionalidades](#-funcionalidades) · [Arquitectura](#-arquitectura) · [Flujos de trabajo](#-flujos-de-trabajo) · [Modelo de datos](#-modelo-de-datos) · [Criterios y decisiones](#-criterios-y-decisiones) · [Stack](#-stack) · [Estructura](#-estructura-del-repo) · [Puesta en marcha](#-puesta-en-marcha) · [Pruebas y calidad](#-pruebas-y-calidad) · [Despliegue](#-despliegue) · [Estado y pendientes](#-estado-y-pendientes) · [Licencia y autoría](#-licencia-y-autoría)
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🧩 El problema
+## <img src="docs/readme/ic-problema.svg" width="24" height="24" alt=""> El problema
 
 Un catálogo técnico con muchas familias de productos, especificaciones, descargas y industrias relacionadas no entra bien en una página estática. Cada cambio de producto, de ficha técnica o de novedad requería intervención de desarrollo, y las consultas comerciales (contacto, suscripción y presupuesto con datos técnicos y adjuntos) llegaban sin un registro ordenado.
 
 Además, el catálogo necesitaba estar disponible en español, portugués e inglés sin duplicar páginas a mano.
 
-## 💡 La solución
+## <img src="docs/readme/ic-solucion.svg" width="24" height="24" alt=""> La solución
 
 **CONAR** es una aplicación Laravel con dos caras:
 
@@ -38,7 +38,7 @@ El panel exige sesión autenticada. Las solicitudes llegan a una bandeja y dispa
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## ✨ Funcionalidades
+## <img src="docs/readme/ic-funcionalidades.svg" width="24" height="24" alt=""> Funcionalidades
 
 **Sitio público** (rol: visitante)
 - Catálogo de productos, categorías, subcategorías, especificaciones, imágenes, descargas e industrias relacionadas.
@@ -57,7 +57,7 @@ El panel exige sesión autenticada. Las solicitudes llegan a una bandeja y dispa
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🏗️ Arquitectura
+## <img src="docs/readme/ic-arquitectura.svg" width="24" height="24" alt=""> Arquitectura
 
 Monolito Laravel. Rutas, controladores, modelos Eloquent, servicios de importación, jobs y comandos Artisan conviven en un mismo repositorio. El sitio público se renderiza con Blade y el panel intercambia props con Inertia y componentes React.
 
@@ -84,7 +84,7 @@ flowchart LR
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🔄 Flujos de trabajo
+## <img src="docs/readme/ic-flujos.svg" width="24" height="24" alt=""> Flujos de trabajo
 
 **Solicitud de presupuesto**
 
@@ -122,7 +122,7 @@ sequenceDiagram
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🗃️ Modelo de datos
+## <img src="docs/readme/ic-datos.svg" width="24" height="24" alt=""> Modelo de datos
 
 Persistencia con Eloquent sobre MySQL, con 48 migraciones versionadas.
 
@@ -150,7 +150,7 @@ Las importaciones se auditan con `ImportRun`, `ImportRunItem` e `ImportRunLog`. 
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🧭 Criterios y decisiones
+## <img src="docs/readme/ic-criterios.svg" width="24" height="24" alt=""> Criterios y decisiones
 
 - **Un importador en etapas.** El crawler no toca la base: solo el importador escribe, dentro de transacciones y con snapshots que permiten revertir una corrida completa.
 - **Contenido traducible como JSON.** Los textos se resuelven por idioma en una capa de soporte para tres locales, sin duplicar páginas.
@@ -165,7 +165,7 @@ Las importaciones se auditan con `ImportRun`, `ImportRunItem` e `ImportRunLog`. 
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🧱 Stack
+## <img src="docs/readme/ic-stack.svg" width="24" height="24" alt=""> Stack
 
 | Capa | Tecnología | Versión |
 | --- | --- | --- |
@@ -182,7 +182,7 @@ Las importaciones se auditan con `ImportRun`, `ImportRunItem` e `ImportRunLog`. 
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🗂️ Estructura del repo
+## <img src="docs/readme/ic-estructura.svg" width="24" height="24" alt=""> Estructura del repo
 
 ```text
 app/Http/Controllers/Web/     sitio público
@@ -202,7 +202,7 @@ tests/                        pruebas unitarias y de funcionalidad
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🚀 Puesta en marcha
+## <img src="docs/readme/ic-arranque.svg" width="24" height="24" alt=""> Puesta en marcha
 
 Requisitos: PHP 8.2+, Composer, Node.js, npm y MySQL.
 
@@ -222,7 +222,7 @@ Variables relevantes (por nombre, sin valores): conexión de base de datos, `MAI
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🧪 Pruebas y calidad
+## <img src="docs/readme/ic-pruebas.svg" width="24" height="24" alt=""> Pruebas y calidad
 
 - Pruebas unitarias del parser de categorías y pruebas de funcionalidad de autenticación, perfil y página principal.
 - Formato con Laravel Pint.
@@ -237,13 +237,13 @@ La última revisión registrada en la versión anterior de este README fue de 29
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 🚢 Despliegue
+## <img src="docs/readme/ic-despliegue.svg" width="24" height="24" alt=""> Despliegue
 
 No documentado en el repositorio. No hay Dockerfile, Docker Compose, configuración de servidor, backups ni pipeline de CI/CD versionados. El scheduler agrega la analítica cada quince minutos y necesita un worker de cola en el entorno real; ambos se configuran fuera de este código.
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 📌 Estado y pendientes
+## <img src="docs/readme/ic-estado.svg" width="24" height="24" alt=""> Estado y pendientes
 
 - **Estado:** aplicación funcional con catálogo, CMS, formularios, importación, analítica y panel.
 - **Último commit:** 2026-05-14, `VERSION 1.0.4`, en el historial local.
@@ -252,7 +252,7 @@ No documentado en el repositorio. No hay Dockerfile, Docker Compose, configuraci
 
 <img src="docs/readme/divider.svg" alt="" width="100%">
 
-## 📄 Licencia y autoría
+## <img src="docs/readme/ic-licencia.svg" width="24" height="24" alt=""> Licencia y autoría
 
 Desarrollado por el **Ing. Santiago Abasto**.
 
