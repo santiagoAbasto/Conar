@@ -1,59 +1,260 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+<img src="docs/readme/banner.svg" alt="CONAR — Catálogo técnico multilingüe, panel de contenido y solicitudes comerciales" width="100%">
+<br/>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Sitio corporativo con catálogo técnico, panel de contenido y solicitudes comerciales.**
 
-## About Laravel
+<img alt="Demo funcional" src="https://img.shields.io/badge/estado-aplicación_funcional-136cba?style=for-the-badge&labelColor=101010">
+<img alt="Laravel 12" src="https://img.shields.io/badge/Laravel-12-ff2d20?style=flat-square&logo=laravel&logoColor=white">
+<img alt="PHP 8.2+" src="https://img.shields.io/badge/PHP-8.2%2B-777bb4?style=flat-square&logo=php&logoColor=white">
+<img alt="React 18" src="https://img.shields.io/badge/React-18-149eca?style=flat-square&logo=react&logoColor=white">
+<img alt="Inertia.js 2" src="https://img.shields.io/badge/Inertia.js-2-9553e9?style=flat-square">
+<img alt="Tailwind CSS 4" src="https://img.shields.io/badge/Tailwind_CSS-4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white">
+<img alt="MySQL" src="https://img.shields.io/badge/MySQL-configurado-4479a1?style=flat-square&logo=mysql&logoColor=white">
+</div>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<img src="docs/readme/divider.svg" alt="" width="100%">
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📑 Contenido
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+[El problema](#-el-problema) · [La solución](#-la-solución) · [Funcionalidades](#-funcionalidades) · [Arquitectura](#-arquitectura) · [Flujos de trabajo](#-flujos-de-trabajo) · [Modelo de datos](#-modelo-de-datos) · [Criterios y decisiones](#-criterios-y-decisiones) · [Stack](#-stack) · [Estructura](#-estructura-del-repo) · [Puesta en marcha](#-puesta-en-marcha) · [Pruebas y calidad](#-pruebas-y-calidad) · [Despliegue](#-despliegue) · [Estado y pendientes](#-estado-y-pendientes) · [Licencia y autoría](#-licencia-y-autoría)
 
-## Learning Laravel
+<img src="docs/readme/divider.svg" alt="" width="100%">
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🧩 El problema
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Un catálogo técnico con muchas familias de productos, especificaciones, descargas y industrias relacionadas no entra bien en una página estática. Cada cambio de producto, de ficha técnica o de novedad requería intervención de desarrollo, y las consultas comerciales (contacto, suscripción y presupuesto con datos técnicos y adjuntos) llegaban sin un registro ordenado.
 
-## Laravel Sponsors
+Además, el catálogo necesitaba estar disponible en español, portugués e inglés sin duplicar páginas a mano.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 💡 La solución
 
-### Premium Partners
+**CONAR** es una aplicación Laravel con dos caras:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Sitio público**, renderizado con Blade: catálogo por categorías, subcategorías y productos, con especificaciones, imágenes, descargas e industrias; páginas corporativas, novedades y formularios comerciales. El contenido se muestra en el idioma elegido por el visitante.
+- **Panel `/admin`**, con Inertia y React, para el equipo interno: catálogo, CMS, descargas, novedades, clientes, contactos, newsletter, usuarios y módulos de recursos humanos.
 
-## Contributing
+El panel exige sesión autenticada. Las solicitudes llegan a una bandeja y disparan notificaciones por correo a los destinatarios configurados.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<img src="docs/readme/divider.svg" alt="" width="100%">
 
-## Code of Conduct
+## ✨ Funcionalidades
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Sitio público** (rol: visitante)
+- Catálogo de productos, categorías, subcategorías, especificaciones, imágenes, descargas e industrias relacionadas.
+- Páginas corporativas, secciones CMS, sliders, novedades y metadatos SEO.
+- Contacto, suscripción a newsletter y solicitud de presupuesto con campos técnicos dinámicos y archivos adjuntos validados.
+- Idioma por sesión o cookie: español, portugués e inglés.
 
-## Security Vulnerabilities
+**Panel `/admin`** (rol: equipo interno autenticado)
+- Gestión de catálogo, CMS, descargas, novedades, clientes, contactos, newsletter y usuarios.
+- Módulos de recursos humanos.
+- Importación de categorías desde el sitio de origen del catálogo (proveedor CONAR): extracción, normalización, descarga opcional de activos, persistencia transaccional, trazabilidad de la corrida y reversión.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Analítica propia**
+- Eventos de página, sesiones y agregados horarios, sin depender de una plataforma externa.
+- Detección heurística de bots: los benignos no cuentan como visitas; los patrones maliciosos se bloquean.
 
-## License
+<img src="docs/readme/divider.svg" alt="" width="100%">
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🏗️ Arquitectura
+
+Monolito Laravel. Rutas, controladores, modelos Eloquent, servicios de importación, jobs y comandos Artisan conviven en un mismo repositorio. El sitio público se renderiza con Blade y el panel intercambia props con Inertia y componentes React.
+
+El importador está separado en crawler, parser, normalizador, DTOs, orquestador e importador: los datos externos se transforman antes de tocar los modelos locales. Detalle en [docs/scraping-import-conar.md](docs/scraping-import-conar.md).
+
+<img src="docs/readme/flujo.svg" alt="Cómo viaja una petición: visitante consulta el sitio o envía formularios, Blade o Inertia responden, Laravel valida y encola, MySQL guarda catálogo, CMS y analítica" width="100%">
+
+```mermaid
+flowchart LR
+    V["Visitante"] --> B["Sitio público (Blade)"]
+    E["Equipo interno"] --> P["Panel /admin (Inertia + React)"]
+    B --> W["Controladores Web"]
+    P --> A["Controladores Admin"]
+    W --> MW["Middleware (auth, guest, bots, CSRF)"]
+    A --> MW
+    MW --> SV["Servicios (importación, telemetría)"]
+    SV --> Q["Cola (jobs de importación y rollback)"]
+    SV --> EL["Eloquent / Query Builder"]
+    Q --> EL
+    EL --> DB[("MySQL")]
+    EL --> ST["Storage público"]
+    SV --> ML["Correo saliente"]
+```
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🔄 Flujos de trabajo
+
+**Solicitud de presupuesto**
+
+```mermaid
+sequenceDiagram
+    actor Visitante
+    participant Web as Sitio público
+    participant Laravel as Laravel
+    participant DB as MySQL
+    participant Correo as Correo
+    Visitante->>Web: Completa campos técnicos y adjunta archivos
+    Web->>Laravel: Envía el formulario de presupuesto
+    Laravel->>Laravel: Valida tipo y tamaño de archivo
+    Laravel->>DB: Guarda la solicitud y sus adjuntos
+    Laravel->>Correo: Notifica a los destinatarios configurados
+```
+
+**Importación de categorías**
+
+```mermaid
+sequenceDiagram
+    actor Equipo as Equipo interno
+    participant Panel as Panel /admin
+    participant Cola as Cola
+    participant Imp as Importador
+    participant DB as MySQL
+    Equipo->>Panel: Inicia la importación
+    Panel->>Cola: Encola RunConarCategoryImportJob
+    Cola->>Imp: Extrae, normaliza y valida
+    Imp->>DB: Persiste en transacción con snapshots
+    Imp->>DB: Registra ImportRun, ImportRunItem e ImportRunLog
+    Equipo->>Panel: Si hace falta, revierte la corrida
+    Panel->>Cola: Encola RollbackImportRunJob
+```
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🗃️ Modelo de datos
+
+Persistencia con Eloquent sobre MySQL, con 48 migraciones versionadas.
+
+```mermaid
+erDiagram
+    PRODUCT_CATEGORY ||--o{ PRODUCT_SUBCATEGORY : contiene
+    PRODUCT_CATEGORY ||--o{ PRODUCT : agrupa
+    PRODUCT_SUBCATEGORY ||--o{ PRODUCT : agrupa
+    PRODUCT ||--o{ PRODUCT_SPECIFICATION : tiene
+    PRODUCT ||--o{ PRODUCT_IMAGE : muestra
+    PRODUCT ||--o{ PRODUCT_DOWNLOAD : ofrece
+    PRODUCT }o--o{ INDUSTRY : relaciona
+    IMPORT_RUN ||--o{ IMPORT_RUN_ITEM : registra
+    IMPORT_RUN ||--o{ IMPORT_RUN_LOG : anota
+    PRODUCT {
+        bigint id PK
+        string slug
+    }
+    IMPORT_RUN {
+        bigint id PK
+    }
+```
+
+Las importaciones se auditan con `ImportRun`, `ImportRunItem` e `ImportRunLog`. El CMS usa páginas, secciones, imágenes de sección, sliders, ajustes, metadatos SEO y publicaciones. Los formularios persisten contactos, suscriptores y solicitudes de presupuesto. La analítica guarda eventos, sesiones, bloqueos de bots y resúmenes horarios.
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🧭 Criterios y decisiones
+
+- **Un importador en etapas.** El crawler no toca la base: solo el importador escribe, dentro de transacciones y con snapshots que permiten revertir una corrida completa.
+- **Contenido traducible como JSON.** Los textos se resuelven por idioma en una capa de soporte para tres locales, sin duplicar páginas.
+- **IP nunca en texto plano.** La telemetría guarda el hash SHA-256 de la IP.
+- **Telemetría acotada.** El endpoint valida UUID y tipo de evento, y está limitado a 120 solicitudes por minuto.
+
+| Decisión | Por qué |
+| --- | --- |
+| Monolito Laravel con Blade y Inertia/React | Un solo backend y una sola base; el sitio público necesita render en servidor y el panel necesita interacción. |
+| Analítica propia en vez de una plataforma externa | Evita depender de un tercero y mantiene los datos de navegación dentro del sistema. |
+| Importación con cola, rollback y trazabilidad | Permite cargar el catálogo sin dejarlo a medias y revertir una corrida sin afectar el resto. |
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🧱 Stack
+
+| Capa | Tecnología | Versión |
+| --- | --- | --- |
+| Lenguaje | PHP | ^8.2 |
+| Backend | Laravel framework | ^12.0 (lock 12.53.0) |
+| Integración panel | inertiajs/inertia-laravel | 2.0.21 |
+| API y sesiones | Laravel Sanctum | 4.3.1 |
+| Frontend | React | 18.3.1 |
+| Frontend | @inertiajs/react | 2.3.17 |
+| Estilos | Tailwind CSS | 4.2.1 |
+| Build | Vite | 7.3.6 |
+| Pruebas | PHPUnit | ^11.5 |
+| Base de datos | MySQL | configurada en `.env.example` |
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🗂️ Estructura del repo
+
+```text
+app/Http/Controllers/Web/     sitio público
+app/Http/Controllers/Admin/   panel /admin
+app/Http/Controllers/         telemetría y perfil
+app/Services/Importers/       importación de catálogo
+app/Services/Scraping/        crawler y parser del origen
+app/Jobs/                     importación y rollback en cola
+routes/web.php, admin.php     rutas públicas y del panel
+routes/api.php                POST /api/telemetry
+database/migrations/          esquema relacional
+resources/views/              Blade público
+resources/js/                 panel React e Inertia
+docs/                         documentación del importador
+tests/                        pruebas unitarias y de funcionalidad
+```
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🚀 Puesta en marcha
+
+Requisitos: PHP 8.2+, Composer, Node.js, npm y MySQL.
+
+```bash
+cp .env.example .env             # definir base, correo y geolocalización localmente
+composer install
+npm ci
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+composer dev                     # servidor, cola, logs y Vite en paralelo
+```
+
+Alternativa: `php artisan serve` y `npm run dev` en terminales separadas.
+
+Variables relevantes (por nombre, sin valores): conexión de base de datos, `MAIL_*`, `QUEUE_CONNECTION`, y las de geolocalización (IPinfo o IPStack). Los valores reales no se versionan.
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🧪 Pruebas y calidad
+
+- Pruebas unitarias del parser de categorías y pruebas de funcionalidad de autenticación, perfil y página principal.
+- Formato con Laravel Pint.
+
+```bash
+php artisan test
+vendor/bin/pint --test
+npm run build
+```
+
+La última revisión registrada en la versión anterior de este README fue de 29 pruebas y 69 aserciones aprobadas; no se volvió a ejecutar para este cambio. No hay pruebas E2E, de carga, análisis estático ni pipeline CI versionados.
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 🚢 Despliegue
+
+No documentado en el repositorio. No hay Dockerfile, Docker Compose, configuración de servidor, backups ni pipeline de CI/CD versionados. El scheduler agrega la analítica cada quince minutos y necesita un worker de cola en el entorno real; ambos se configuran fuera de este código.
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 📌 Estado y pendientes
+
+- **Estado:** aplicación funcional con catálogo, CMS, formularios, importación, analítica y panel.
+- **Último commit:** 2026-05-14, `VERSION 1.0.4`, en el historial local.
+- **Producción:** no verificado.
+- **Pendientes:** definir despliegue, worker de cola y copias de seguridad; ampliar las pruebas más allá de autenticación y página principal.
+
+<img src="docs/readme/divider.svg" alt="" width="100%">
+
+## 📄 Licencia y autoría
+
+Desarrollado por el **Ing. Santiago Abasto**.
+
+
+Repositorio sin archivo de licencia. El código y el contenido son propiedad del cliente, salvo que se acuerde otra cosa.
